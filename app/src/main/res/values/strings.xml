@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">SentinAI</string>
+    <string name="title_activity_app_entry_screen">AppEntryScreen</string>
+</resources>
