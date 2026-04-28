@@ -127,7 +127,7 @@ class TemplateChatAnswerGenerator @Inject constructor(): ChatAnswerGenerator {
                     )
                 } else {
                     ChatAnswer(
-                        text = "최근 7일 동안 가장 오래 사용한 앱은 ${topApp.appName}입니다. 사용 시간은 ${topApp.usageMillis.toHoursText()}이고, 실행 횟수는 ${topApp.launchCount}회입니다.",
+                        text = "최근 7일 동안 가장 오래 사용한 앱은 ${topApp.displayName()}입니다. 사용 시간은 ${topApp.usageMillis.toHoursText()}이고, 실행 횟수는 ${topApp.launchCount}회입니다.",
                         source = "Analytics 앱별 사용량 데이터",
                         modelTier = ModelTier.Template
                     )
@@ -157,6 +157,25 @@ class TemplateChatAnswerGenerator @Inject constructor(): ChatAnswerGenerator {
     private fun Long.toHoursText(): String {
         val hours = this / (1000f * 60f * 60f)
         return "${hours.format(1)}시간"
+    }
+
+    private fun com.example.sentinal.domain.model.AppUsagePoint.displayName(): String {
+        return appName ?: packageName.toFallbackAppName()
+    }
+
+    private fun String.toFallbackAppName(): String {
+        val rawName = substringAfterLast('.')
+            .ifBlank { this }
+            .replace('_', ' ')
+            .replace('-', ' ')
+
+        return rawName.replaceFirstChar { firstChar ->
+            if (firstChar.isLowerCase()) {
+                firstChar.titlecase()
+            } else {
+                firstChar.toString()
+            }
+        }
     }
 
     private fun Float.format(digits: Int): String {

@@ -5,19 +5,21 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
 class AppLabelResolver @Inject constructor(
-    @param:ApplicationContext private val context: Context
+    @param:ApplicationContext private val context: Context,
 ) {
-    fun resolveAppName(packageName: String): String{
+    fun resolveAppName(packageName: String): String? {
         val packageManager = context.packageManager
 
         val applicationInfo = runCatching {
-            packageManager.getApplicationInfo(packageName,0)
-        }.getOrNull()?:return packageName
+            packageManager.getApplicationInfo(packageName, 0)
+        }.getOrNull() ?: return null
 
-        return runCatching {
+        val appName = runCatching {
             packageManager.getApplicationLabel(applicationInfo).toString()
-        }.getOrElse {
-            packageName
-        }
+        }.getOrNull()?.trim()
+
+        return appName
+            ?.takeIf { it.isNotBlank() }
+            ?.takeUnless { it == packageName }
     }
 }

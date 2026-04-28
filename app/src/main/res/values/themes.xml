@@ -2,4 +2,10 @@
 <resources>
 
     <style name="Theme.SentinA" parent="android:Theme.Material.Light.NoActionBar" />
+
+    <style name="Theme.SentinA.Starting" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/splash_background</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_launcher</item>
+        <item name="postSplashScreenTheme">@style/Theme.SentinA</item>
+    </style>
 </resources>

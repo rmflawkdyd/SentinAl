@@ -27,7 +27,7 @@ class ChatViewModel @Inject constructor(
                 id = "welcome",
                 role = ChatMessageRole.Assistant,
                 text = "휴대폰 상태, 발열 참고, 느려짐, 배터리 사용 패턴, 보안 관련 제한 안내, 주간 사용량에 대해 물어볼 수 있어요.",
-                source = "SentinAI 안내",
+                source = "SentinAI",
             )
             )
     ))
@@ -97,7 +97,7 @@ class ChatViewModel @Inject constructor(
                     id = "welcome-${System.currentTimeMillis()}",
                     role = ChatMessageRole.Assistant,
                     text = "다시 질문해 주세요. 내부 데이터 기준으로 답변할게요.",
-                    source = "SentinAI 안내",
+                    source = "SentinAI",
                 )
             )
         )

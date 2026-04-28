@@ -21,7 +21,7 @@ data class CategoryUsagePoint(
 
 data class AppUsagePoint(
     val packageName: String,
-    val appName: String,
+    val appName: String?,
     val usageMillis: Long,
     val launchCount: Int,
 )

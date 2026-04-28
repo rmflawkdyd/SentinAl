@@ -22,34 +22,32 @@ import com.example.sentinal.presentation.onboarding.OnboardingScreen
 
 @Composable
 fun AppEntryScreen(
-    paddingValues: PaddingValues,
     viewModel: AppEntryViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val emptyPadding = PaddingValues()
 
     when(val state = uiState){
         AppEntryUiState.Loading ->{
             AppEntryLoading(
-                modifier = Modifier.padding(paddingValues)
+                modifier = Modifier.padding(emptyPadding)
             )
         }
 
         AppEntryUiState.NeedsOnboarding->{
             OnboardingScreen(
-                paddingValues = paddingValues,
+                paddingValues = emptyPadding,
                 onPermissionGranted = viewModel::refresh
             )
         }
 
         AppEntryUiState.Ready -> {
-            MainShellScreen(
-                paddingValues = paddingValues
-            )
+            MainShellScreen()
         }
 
         is AppEntryUiState.Error -> {
             AppEntryError(
-                modifier = Modifier.padding(paddingValues),
+                modifier = Modifier.padding(emptyPadding),
                 message = state.message,
                 onRetry = viewModel::refresh,
             )

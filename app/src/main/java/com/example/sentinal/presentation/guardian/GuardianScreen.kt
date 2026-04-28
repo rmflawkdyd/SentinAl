@@ -1,31 +1,55 @@
 package com.example.sentinal.presentation.guardian
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.sentinal.R
+import com.example.sentinal.domain.model.GuardianStatus
+import com.example.sentinal.presentation.design.BarChart
+import com.example.sentinal.presentation.design.Dot
+import com.example.sentinal.presentation.design.HeaderBlock
+import com.example.sentinal.presentation.design.MetricGlyph
+import com.example.sentinal.presentation.design.ScoreRing
+import com.example.sentinal.presentation.design.ScreenSurface
+import com.example.sentinal.presentation.design.SentinCard
+import com.example.sentinal.presentation.design.SentinDanger
+import com.example.sentinal.presentation.design.SentinInk
+import com.example.sentinal.presentation.design.SentinMuted
+import com.example.sentinal.presentation.design.SentinNavy
+import com.example.sentinal.presentation.design.SentinText
+import com.example.sentinal.presentation.design.StateMessage
 
 @Composable
 fun GuardianScreen(
     paddingValues: PaddingValues,
-    viewModel: GuardianViewModel = hiltViewModel()
-){
+    viewModel: GuardianViewModel = hiltViewModel(),
+) {
     DisposableEffect(viewModel) {
         onDispose {
             viewModel.releaseGemmaSession()
@@ -36,49 +60,30 @@ fun GuardianScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     when (val state = uiState) {
-        GuardianUiState.Loading -> {
-            GuardianLoading(
-                modifier = Modifier.padding(paddingValues)
-            )
-        }
-
-        GuardianUiState.Empty -> {
-            GuardianEmpty(
-                modifier = Modifier.padding(paddingValues),
-                onReload = viewModel::loadGuardian,
-            )
-        }
-
-        is GuardianUiState.Error -> {
-            GuardianError(
-                modifier = Modifier.padding(paddingValues),
-                message = state.message,
-                onReload = viewModel::loadGuardian,
-            )
-        }
-
-        is GuardianUiState.Success -> {
-            GuardianSuccess(
-                modifier = Modifier.padding(paddingValues),
-                state = state,
-            )
-        }
+        GuardianUiState.Loading -> GuardianLoading(Modifier.padding(paddingValues))
+        GuardianUiState.Empty -> GuardianEmpty(
+            modifier = Modifier.padding(paddingValues),
+            onReload = viewModel::loadGuardian,
+        )
+        is GuardianUiState.Error -> GuardianError(
+            modifier = Modifier.padding(paddingValues),
+            message = state.message,
+            onReload = viewModel::loadGuardian,
+        )
+        is GuardianUiState.Success -> GuardianSuccess(
+            modifier = Modifier.padding(paddingValues),
+            state = state,
+        )
     }
 }
 
 @Composable
-private fun GuardianLoading(
-    modifier: Modifier = Modifier,
-){
-    Column(
-        modifier =modifier.fillMaxSize().padding(24.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        CircularProgressIndicator()
-        Text(
-            text = "최근 데이터를 불러오는 중입니다.",
-            modifier = Modifier.padding(top = 16.dp)
+private fun GuardianLoading(modifier: Modifier = Modifier) {
+    ScreenSurface(modifier) {
+        StateMessage(
+            title = "Guardian",
+            message = "최근 데이터를 불러오는 중입니다.",
+            isLoading = true,
         )
     }
 }
@@ -86,23 +91,15 @@ private fun GuardianLoading(
 @Composable
 private fun GuardianEmpty(
     modifier: Modifier = Modifier,
-    onReload:()-> Unit
-){
-    Column(
-        modifier = modifier.fillMaxSize().padding(24.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(
-            text = "표시할 Guardian 데이터가 없습니다.",
-            style = MaterialTheme.typography.titleMedium
+    onReload: () -> Unit,
+) {
+    ScreenSurface(modifier) {
+        StateMessage(
+            title = "표시할 Guardian 데이터가 없습니다.",
+            message = "UsageStats 권한 또는 최근 집계 데이터가 필요합니다.",
+            buttonText = "다시 시도",
+            onButtonClick = onReload,
         )
-
-        Button(
-            onClick = onReload,
-            modifier = Modifier.padding(top = 16.dp)
-        ) {
-            Text(text = "다시 시도")
-        }
     }
 }
 
@@ -110,32 +107,15 @@ private fun GuardianEmpty(
 private fun GuardianError(
     modifier: Modifier = Modifier,
     message: String,
-    onReload:()-> Unit
-){
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(24.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        Text(
-            text = "오류가 발생했습니다.",
-            style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.error
+    onReload: () -> Unit,
+) {
+    ScreenSurface(modifier) {
+        StateMessage(
+            title = "오류가 발생했습니다.",
+            message = message,
+            buttonText = "다시 시도",
+            onButtonClick = onReload,
         )
-
-        Text(
-            text = message,
-            modifier = Modifier.padding(top = 8.dp),
-
-        )
-        Button(
-            onClick = onReload,
-            modifier = Modifier.padding(top = 16.dp)
-        ) {
-            Text(text = "다시 시도")
-        }
     }
 }
 
@@ -144,100 +124,240 @@ private fun GuardianSuccess(
     modifier: Modifier = Modifier,
     state: GuardianUiState.Success,
 ) {
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(24.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
-    ) {
-        Text(
-            text = "Guardian",
-            style = MaterialTheme.typography.headlineMedium,
-            fontWeight = FontWeight.Bold,
-        )
+    val latestPoint = state.chartPoints.lastOrNull()
+    val chartValues = if (state.chartPoints.isEmpty()) {
+        listOf(40f, 35f, 50f, 65f, 80f, 55f, 90f, 30f, 45f, 35f, 60f, 40f)
+    } else {
+        state.chartPoints.takeLast(12).map { it.appSwitchCount.toFloat().coerceAtLeast(1f) }
+    }
 
-        Card(
-            modifier = Modifier.fillMaxWidth(),
+    ScreenSurface(modifier) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 20.dp, vertical = 24.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            Column(
-                modifier = Modifier.padding(20.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-            ) {
-                Text(
-                    text = "리소스 점수 ${state.score}",
-                    style = MaterialTheme.typography.headlineSmall,
-                    fontWeight = FontWeight.Bold,
+            HeaderBlock(
+                title = "Guardian",
+                subtitle = "Your daily device health briefing",
+            )
+            ResourceScoreCard(state)
+            ActivityCard(chartValues)
+            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                MetricCard(
+                    title = "Memory",
+                    value = latestPoint?.let { "${it.availableMemPercent.format(0)}% available" }
+                        ?: "No data",
+                    iconRes = R.drawable.ic_memory,
+                    modifier = Modifier.weight(1f),
                 )
-                Text(
-                    text = "상태: ${state.status}",
-                    style = MaterialTheme.typography.titleMedium,
+                MetricCard(
+                    title = "App Switches",
+                    value = latestPoint?.let { "${it.appSwitchCount} recent" } ?: "No data",
+                    iconRes = R.drawable.ic_switch,
+                    modifier = Modifier.weight(1f),
                 )
             }
+            InsightCard(state)
+            Spacer(modifier = Modifier.height(8.dp))
         }
+    }
+}
 
-        Card(
-            modifier = Modifier.fillMaxWidth(),
+@Composable
+private fun ResourceScoreCard(state: GuardianUiState.Success) {
+    SentinCard(modifier = Modifier.fillMaxWidth()) {
+        Column(
+            modifier = Modifier.padding(horizontal = 21.dp, vertical = 36.dp),
+            verticalArrangement = Arrangement.spacedBy(24.dp),
         ) {
-            Column(
-                modifier = Modifier.padding(20.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.Top,
             ) {
-                Text(
-                    text = "24시간 그래프",
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.SemiBold,
-                )
-
-                if (state.chartPoints.isEmpty()) {
+                Column {
                     Text(
-                        text = "아직 24시간 그래프를 표시할 데이터가 부족합니다.",
-                        style = MaterialTheme.typography.bodyMedium,
-                    )
-                } else {
-                    val latestPoint = state.chartPoints.last()
-
-                    Text(
-                        text = "집계 포인트 ${state.chartPoints.size}개",
-                        style = MaterialTheme.typography.bodyMedium,
+                        text = "Resource Score",
+                        color = SentinText,
+                        fontSize = 20.sp,
+                        lineHeight = 28.sp,
+                        fontWeight = FontWeight.SemiBold,
                     )
                     Text(
-                        text = "최근 메모리 여유 ${latestPoint.availableMemPercent.format(1)}%",
-                        style = MaterialTheme.typography.bodyMedium,
-                    )
-                    Text(
-                        text = "최근 앱 전환 ${latestPoint.appSwitchCount}회",
-                        style = MaterialTheme.typography.bodyMedium,
+                        text = "SYSTEM INTEGRITY",
+                        color = SentinMuted,
+                        fontSize = 12.sp,
+                        lineHeight = 16.sp,
+                        fontWeight = FontWeight.Bold,
                     )
                 }
+                StatusPill(status = state.status)
             }
-        }
-
-
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-        ) {
-            Column(
-                modifier = Modifier.padding(20.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-            ) {
-                Text(
-                    text = state.insightTitle,
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.SemiBold,
-                )
-                Text(
-                    text = state.insightBody,
-                    style = MaterialTheme.typography.bodyLarge,
-                )
-                Text(
-                    text = "Source: ${state.source}",
-                    style = MaterialTheme.typography.bodySmall,
-                )
+            Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                ScoreRing(score = state.score)
             }
         }
     }
 }
 
-private fun Float.format(digits: Int): String {
-    return "%.${digits}f".format(this)
+@Composable
+private fun StatusPill(status: GuardianStatus) {
+    val color = when (status) {
+        GuardianStatus.NORMAL -> Color(0xFF466978)
+        GuardianStatus.CAUTION -> Color(0xFFD97706)
+        GuardianStatus.DANGER -> SentinDanger
+    }
+    Box(
+        modifier = Modifier
+            .background(color.copy(alpha = 0.14f), RoundedCornerShape(999.dp))
+            .padding(horizontal = 12.dp, vertical = 4.dp),
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(6.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Dot(color = color, modifier = Modifier.size(8.dp))
+            Text(
+                text = status.name.lowercase().replaceFirstChar { it.uppercase() },
+                color = color,
+                fontSize = 12.sp,
+                lineHeight = 16.sp,
+                fontWeight = FontWeight.Bold,
+            )
+        }
+    }
 }
+
+@Composable
+private fun ActivityCard(values: List<Float>) {
+    SentinCard(modifier = Modifier.fillMaxWidth()) {
+        Column(
+            modifier = Modifier.padding(21.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.Bottom,
+            ) {
+                Text(text = "Last Hour Activity", color = SentinText, fontSize = 16.sp, lineHeight = 24.sp)
+                Text(
+                    text = "LIVE TRACKING",
+                    color = SentinMuted,
+                    fontSize = 12.sp,
+                    lineHeight = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                )
+            }
+            BarChart(
+                values = values,
+                inactiveColor = Color(0xFFD3D8DF),
+                cornerRadius = 2f,
+                modifier = Modifier.fillMaxWidth(),
+            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+            ) {
+                AxisLabel("60m ago")
+                AxisLabel("30m ago")
+                AxisLabel("NOW")
+            }
+        }
+    }
+}
+
+@Composable
+private fun MetricCard(
+    title: String,
+    value: String,
+    iconRes: Int,
+    modifier: Modifier = Modifier,
+) {
+    SentinCard(modifier = modifier) {
+        Column(
+            modifier = Modifier.padding(17.dp),
+            verticalArrangement = Arrangement.spacedBy(4.dp),
+        ) {
+            Image(
+                painter = painterResource(id = iconRes),
+                contentDescription = title,
+                modifier = Modifier.size(20.dp),
+            )
+            Text(
+                text = title,
+                color = SentinMuted,
+                fontSize = 12.sp,
+                lineHeight = 16.sp,
+                fontWeight = FontWeight.Bold,
+            )
+            Text(
+                text = value,
+                color = SentinInk,
+                fontSize = 18.sp,
+                lineHeight = 27.sp,
+            )
+        }
+    }
+}
+
+@Composable
+private fun InsightCard(state: GuardianUiState.Success) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(SentinNavy, RoundedCornerShape(12.dp))
+            .padding(horizontal = 20.dp, vertical = 20.dp),
+    ) {
+        Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                MetricGlyph(kind = "insight")
+                Text(
+                    text = state.insightTitle,
+                    color = Color.White,
+                    fontSize = 16.sp,
+                    lineHeight = 24.sp,
+                )
+            }
+            Text(
+                text = state.insightBody,
+                color = Color.White.copy(alpha = 0.9f),
+                fontSize = 16.sp,
+                lineHeight = 26.sp,
+            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    text = "SOURCE: ${state.source.uppercase()}",
+                    color = Color.White.copy(alpha = 0.6f),
+                    fontSize = 10.sp,
+                    lineHeight = 15.sp,
+                    fontWeight = FontWeight.Normal,
+                )
+
+            }
+        }
+    }
+}
+
+@Composable
+private fun AxisLabel(text: String) {
+    Text(
+        text = text,
+        color = SentinMuted,
+        fontSize = 12.sp,
+        lineHeight = 16.sp,
+        fontWeight = FontWeight.Bold,
+    )
+}
+
+private fun Float.format(digits: Int): String = "%.${digits}f".format(this)
