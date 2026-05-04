@@ -198,6 +198,7 @@ fun BarChart(
     activeColor: Color = SentinNavy,
     inactiveColor: Color = Color(0xFFE8EDF3),
     cornerRadius: Float = 8f,
+    hideZeroValues: Boolean = false,
 ) {
     val maxValue = values.maxOrNull()?.takeIf { it > 0f } ?: 1f
     Row(
@@ -212,7 +213,15 @@ fun BarChart(
                     .weight(1f)
                     .fillMaxHeight(ratio)
                     .clip(RoundedCornerShape(topStart = cornerRadius.dp, topEnd = cornerRadius.dp))
-                    .background(if (highlightIndex == index) activeColor else inactiveColor),
+                    .background(
+                        if (hideZeroValues && value <= 0f) {
+                            Color.Transparent
+                        } else if (highlightIndex == index) {
+                            activeColor
+                        } else {
+                            inactiveColor
+                        },
+                    ),
             )
         }
     }

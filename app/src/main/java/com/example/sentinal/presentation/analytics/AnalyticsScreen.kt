@@ -149,8 +149,11 @@ private fun AnalyticsSuccess(
 @Composable
 private fun WeeklyUsageCard(summary: AnalyticsSummary) {
     val values = summary.dailyUsages.map { it.usageMillis.toFloat() }
-    val chartValues = values.ifEmpty { listOf(2f, 3f, 2.4f, 4.2f, 2.8f, 1.5f, 2.5f) }
-    val highlightIndex = chartValues.indices.maxByOrNull { chartValues[it] }
+    val chartValues = values.ifEmpty { List(7) { 0f } }
+    val highlightIndex = chartValues
+        .indices
+        .filter { chartValues[it] > 0f }
+        .maxByOrNull { chartValues[it] }
     val weekdayLabels = summary.dailyUsages.map { it.dateEpoch.toWeekdayLabel() }
 
     SentinCard(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp)) {
@@ -178,6 +181,7 @@ private fun WeeklyUsageCard(summary: AnalyticsSummary) {
                 highlightIndex = highlightIndex,
                 activeColor = SentinInk,
                 inactiveColor = SentinLine,
+                hideZeroValues = true,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 16.dp),

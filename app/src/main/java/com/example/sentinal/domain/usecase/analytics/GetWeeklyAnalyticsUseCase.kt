@@ -49,15 +49,19 @@ class GetWeeklyAnalyticsUseCase @Inject constructor(
             nightUsageMillis.toFloat() / totalUsageMillis.toFloat() * 100f
         }
 
-        val dailyUsages = currentItems
+        val usageByDay = currentItems
             .groupBy { it.dateEpochDay }
-            .map { (dateEpochDay, items) ->
+            .mapValues { (_, items) ->
+                items.sumOf { it.usageTimeMillis }
+            }
+
+        val dailyUsages = (currentFromDay..currentToDay)
+            .map { dateEpochDay ->
                 DailyUsagePoint(
                     dateEpoch = dateEpochDay,
-                    usageMillis = items.sumOf { it.usageTimeMillis },
+                    usageMillis = usageByDay[dateEpochDay] ?: 0L,
                 )
             }
-            .sortedBy { it.dateEpoch }
 
         val categoryUsages = currentItems
             .groupBy { it.category ?: "기타" }
