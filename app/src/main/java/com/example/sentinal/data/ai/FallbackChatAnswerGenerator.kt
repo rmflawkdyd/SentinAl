@@ -2,6 +2,8 @@ package com.example.sentinal.data.ai
 
 import android.util.Log
 import com.example.sentinal.domain.ai.ChatAnswerGenerator
+import com.example.sentinal.domain.ai.GeminiNanoProvider
+import com.example.sentinal.domain.ai.GemmaProvider
 import com.example.sentinal.domain.model.ChatAnswer
 import com.example.sentinal.domain.model.ChatContext
 import com.example.sentinal.domain.model.ChatIntent
@@ -11,8 +13,8 @@ import javax.inject.Inject
 
 class FallbackChatAnswerGenerator @Inject constructor(
     private val modelAvailabilityChecker: ModelAvailabilityChecker,
-    private val geminiNanoChatAnswerGenerator: GeminiNanoChatAnswerGenerator,
-    private val gemmaChatAnswerGenerator: GemmaChatAnswerGenerator,
+    private val geminiNanoProvider: GeminiNanoProvider,
+    private val gemmaProvider: GemmaProvider,
     private val templateChatAnswerGenerator: TemplateChatAnswerGenerator,
 ) : ChatAnswerGenerator {
 
@@ -21,14 +23,14 @@ class FallbackChatAnswerGenerator @Inject constructor(
         intent: ChatIntent,
         context: ChatContext,
     ): ChatAnswer {
-        val tier = modelAvailabilityChecker.getAvailableChatTier()
+        val tier = modelAvailabilityChecker.getAvailableTier()
         Log.d(TAG, "selectedTier=$tier, intent=$intent")
 
         return when (tier) {
             ModelTier.GeminiNano -> {
                 Log.d(TAG, "trying Gemini Nano")
                 val geminiAnswer = withTimeoutOrNull(2_000L) {
-                    geminiNanoChatAnswerGenerator.tryGenerate(
+                    geminiNanoProvider.generateChatAnswer(
                         question = question,
                         intent = intent,
                         context = context,
@@ -74,7 +76,7 @@ class FallbackChatAnswerGenerator @Inject constructor(
         context: ChatContext,
     ): ChatAnswer {
         val gemmaAnswer = withTimeoutOrNull(2_000L) {
-            gemmaChatAnswerGenerator.tryGenerate(
+            gemmaProvider.generateChatAnswer(
                 question = question,
                 intent = intent,
                 context = context,

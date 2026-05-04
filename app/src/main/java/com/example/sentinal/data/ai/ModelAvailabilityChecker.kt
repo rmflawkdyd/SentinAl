@@ -17,15 +17,7 @@ class ModelAvailabilityChecker @Inject constructor(
         return gemmaProvider.isAvailable()
     }
 
-    fun getAvailableChatTier(): ModelTier {
-        return when {
-            isGeminiNanoAvailable() -> ModelTier.GeminiNano
-            isGemmaAvailable() -> ModelTier.Gemma
-            else -> ModelTier.Template
-        }
-    }
-
-    fun getAvailableInsightTier(): ModelTier {
+    fun getAvailableTier(): ModelTier {
         return when {
             isGeminiNanoAvailable() -> ModelTier.GeminiNano
             isGemmaAvailable() -> ModelTier.Gemma

@@ -1,6 +1,8 @@
 package com.example.sentinal.data.ai
 
 import android.util.Log
+import com.example.sentinal.domain.ai.GeminiNanoProvider
+import com.example.sentinal.domain.ai.GemmaProvider
 import com.example.sentinal.domain.ai.InsightGenerator
 import com.example.sentinal.domain.model.GuardianResult
 import com.example.sentinal.domain.model.InsightSummary
@@ -10,22 +12,22 @@ import javax.inject.Inject
 
 class FallbackInsightGenerator @Inject constructor(
     private val modelAvailabilityChecker: ModelAvailabilityChecker,
-    private val geminiNanoInsightGenerator: GeminiNanoInsightGenerator,
-    private val gemmaInsightGenerator: GemmaInsightGenerator,
+    private val geminiNanoProvider: GeminiNanoProvider,
+    private val gemmaProvider: GemmaProvider,
     private val templateInsightGenerator: TemplateInsightGenerator,
 ) : InsightGenerator {
 
     override suspend fun generateGuardianInsight(
         result: GuardianResult,
     ): InsightSummary {
-        val tier = modelAvailabilityChecker.getAvailableInsightTier()
+        val tier = modelAvailabilityChecker.getAvailableTier()
         Log.d(TAG, "selectedTier=$tier, guardianStatus=${result.status}, score=${result.score}")
 
         return when (tier) {
             ModelTier.GeminiNano -> {
                 Log.d(TAG, "trying Gemini Nano")
                 val geminiInsight = withTimeoutOrNull(2_000L) {
-                    geminiNanoInsightGenerator.tryGenerate(result)
+                    geminiNanoProvider.generateGuardianInsight(result)
                 }
 
                 if (geminiInsight != null) {
@@ -53,7 +55,7 @@ class FallbackInsightGenerator @Inject constructor(
         result: GuardianResult,
     ): InsightSummary {
         val gemmaInsight = withTimeoutOrNull(2_000L) {
-            gemmaInsightGenerator.tryGenerate(result)
+            gemmaProvider.generateGuardianInsight(result)
         }
 
         return if (gemmaInsight != null) {
