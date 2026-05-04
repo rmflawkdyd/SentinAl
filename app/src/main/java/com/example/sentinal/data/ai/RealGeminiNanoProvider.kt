@@ -8,6 +8,7 @@ import com.example.sentinal.domain.ai.GeminiNanoProvider
 import com.example.sentinal.domain.model.ChatAnswer
 import com.example.sentinal.domain.model.ChatContext
 import com.example.sentinal.domain.model.ChatIntent
+import com.example.sentinal.domain.model.GeminiNanoRuntimeStatus
 import com.example.sentinal.domain.model.GuardianResult
 import com.example.sentinal.domain.model.InsightSummary
 import com.example.sentinal.domain.model.ModelTier
@@ -30,7 +31,7 @@ class RealGeminiNanoProvider @Inject constructor(
         return getStatus() is GeminiNanoRuntimeStatus.Ready
     }
 
-    fun getStatus(): GeminiNanoRuntimeStatus {
+    override fun getStatus(): GeminiNanoRuntimeStatus {
         if (!BuildConfig.ENABLE_GEMINI_NANO) {
             Log.d(TAG, "Gemini Nano disabled by BuildConfig")
             return GeminiNanoRuntimeStatus.Disabled

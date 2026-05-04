@@ -1,12 +1,12 @@
 package com.example.sentinal.domain.usecase.ai
 
-import com.example.sentinal.data.ai.GemmaRuntime
+import com.example.sentinal.domain.ai.GemmaRuntimeController
 import javax.inject.Inject
 
 class ReleaseGemmaRuntimeUseCase @Inject constructor(
-    private val gemmaRuntime: GemmaRuntime,
+    private val gemmaRuntimeController: GemmaRuntimeController,
 ) {
     operator fun invoke() {
-        gemmaRuntime.release()
+        gemmaRuntimeController.release()
     }
 }

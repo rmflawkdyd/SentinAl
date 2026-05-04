@@ -1,4 +1,4 @@
-package com.example.sentinal.data.ai
+package com.example.sentinal.domain.model
 
 sealed interface GemmaRuntimeStatus {
     data object Ready : GemmaRuntimeStatus
