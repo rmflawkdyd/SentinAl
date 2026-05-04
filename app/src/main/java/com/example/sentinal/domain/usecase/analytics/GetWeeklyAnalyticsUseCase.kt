@@ -1,6 +1,7 @@
 package com.example.sentinal.domain.usecase.analytics
 
 import com.example.sentinal.data.appinfo.AppLabelResolver
+import com.example.sentinal.data.appinfo.UsageStatsAppFilter
 import com.example.sentinal.domain.model.AnalyticsSummary
 import com.example.sentinal.domain.model.AppUsagePoint
 import com.example.sentinal.domain.model.CategoryUsagePoint
@@ -15,6 +16,7 @@ class GetWeeklyAnalyticsUseCase @Inject constructor(
     private val appUsageDailyRepository: AppUsageDailyRepository,
     private val analyticsRuleEngine: AnalyticsRuleEngine,
     private val appLabelResolver: AppLabelResolver,
+    private val usageStatsAppFilter: UsageStatsAppFilter,
 ){
     suspend operator fun invoke(
         today: LocalDate = LocalDate.now()
@@ -32,6 +34,7 @@ class GetWeeklyAnalyticsUseCase @Inject constructor(
                 toDay = currentToDay
             )
             .first()
+            .filterNot { usageStatsAppFilter.shouldExclude(it.packageName) }
 
         val previousItems = appUsageDailyRepository
             .observeDailyUsageRange(
@@ -39,6 +42,7 @@ class GetWeeklyAnalyticsUseCase @Inject constructor(
                 toDay = previousToDay
             )
             .first()
+            .filterNot { usageStatsAppFilter.shouldExclude(it.packageName) }
 
         val totalUsageMillis = currentItems.sumOf {it.usageTimeMillis }
         val previousTotalUsageMillis = previousItems.sumOf { it.usageTimeMillis }

@@ -2,6 +2,7 @@ package com.example.sentinal.domain.usecase.aggregate
 
 import android.app.usage.UsageEvents
 import com.example.sentinal.data.appinfo.AppCategoryResolver
+import com.example.sentinal.data.appinfo.UsageStatsAppFilter
 import com.example.sentinal.data.local.entity.AppUsageDailyEntity
 import com.example.sentinal.data.local.entity.UsageEventEntity
 import com.example.sentinal.domain.repository.AppUsageDailyRepository
@@ -17,12 +18,14 @@ class AggregateDailyAppUsageUseCase @Inject constructor(
     private val usageRepository: UsageRepository,
     private val appUsageDailyRepository: AppUsageDailyRepository,
     private val appCategoryResolver: AppCategoryResolver,
+    private val usageStatsAppFilter: UsageStatsAppFilter,
 ) {
     suspend operator fun invoke(fromTimestamp: Long,toTimestamp:Long,zoneId: ZoneId = ZoneId.systemDefault(),){
         val usageEvents = usageRepository
             .observeRecentUsageEvents(fromTimestamp)
             .first()
             .filter { it.timestamp in fromTimestamp..toTimestamp }
+            .filterNot { usageStatsAppFilter.shouldExclude(it.packageName) }
             .distinctBy {
                 UsageEventKey(
                     timestamp = it.timestamp,
@@ -196,4 +199,3 @@ private data class UsageEventKey(
     val className: String?,
     val eventType: Int,
 )
-
