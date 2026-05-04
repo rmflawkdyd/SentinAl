@@ -43,6 +43,7 @@ fun MainShellScreen() {
     }
 
     Scaffold(
+        modifier = Modifier.statusBarsPadding(),
         containerColor = SentinBg,
         bottomBar = {
             SentinBottomBar(

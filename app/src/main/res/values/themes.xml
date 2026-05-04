@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.SentinA" parent="android:Theme.Material.Light.NoActionBar" />
+    <style name="Theme.SentinAI" parent="android:Theme.Material.Light.NoActionBar" />
 
-    <style name="Theme.SentinA.Starting" parent="Theme.SplashScreen">
+    <style name="Theme.SentinAI.Starting" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground">@color/splash_background</item>
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_launcher</item>
-        <item name="postSplashScreenTheme">@style/Theme.SentinA</item>
+        <item name="postSplashScreenTheme">@style/Theme.SentinAI</item>
     </style>
 </resources>
