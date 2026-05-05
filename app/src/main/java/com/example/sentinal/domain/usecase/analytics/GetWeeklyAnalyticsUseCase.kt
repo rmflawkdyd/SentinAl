@@ -98,6 +98,7 @@ class GetWeeklyAnalyticsUseCase @Inject constructor(
                 currentTotalMillis = totalUsageMillis,
                 previousTotalMillis = previousTotalUsageMillis,
             ),
+            hasPreviousUsageData = previousTotalUsageMillis > 0L,
             nightUsageRatePercent = nightUsageRatePercent,
             dailyUsages = dailyUsages,
             categoryUsages = categoryUsages,

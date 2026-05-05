@@ -3,6 +3,7 @@ package com.example.sentinal.domain.model
 data class AnalyticsSummary(
     val totalUsageMillis: Long,
     val changeRatePercent: Float,
+    val hasPreviousUsageData: Boolean,
     val nightUsageRatePercent: Float,
     val dailyUsages:List<DailyUsagePoint>,
     val categoryUsages: List<CategoryUsagePoint>,

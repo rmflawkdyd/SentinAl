@@ -142,7 +142,11 @@ private fun AnalyticsSuccess(
             HeaderBlock("Analytics", "Weekly usage report")
             WeeklyUsageCard(summary)
             Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                ChangeCard(summary.changeRatePercent, Modifier.weight(1f))
+                ChangeCard(
+                    changeRatePercent = summary.changeRatePercent,
+                    hasPreviousUsageData = summary.hasPreviousUsageData,
+                    modifier = Modifier.weight(1f),
+                )
                 NightUsageCard(summary.nightUsageRatePercent, Modifier.weight(1f))
             }
             TopAppsSection(summary.topApps.take(5))
@@ -212,7 +216,11 @@ private fun WeeklyUsageCard(summary: AnalyticsSummary) {
 }
 
 @Composable
-private fun ChangeCard(changeRatePercent: Float, modifier: Modifier = Modifier) {
+private fun ChangeCard(
+    changeRatePercent: Float,
+    hasPreviousUsageData: Boolean,
+    modifier: Modifier = Modifier,
+) {
     val isDown = changeRatePercent <= 0f
     SentinCard(modifier = modifier.height(136.dp), shape = RoundedCornerShape(16.dp)) {
         Column(
@@ -225,11 +233,17 @@ private fun ChangeCard(changeRatePercent: Float, modifier: Modifier = Modifier) 
                 style = SentinAITextStyles.Label.copy(fontWeight = FontWeight.Bold),
             )
             Text(
-                text = "${if (isDown) "↓" else "↑"} ${changeRatePercent.format(0)}%",
-                color = if (isDown) SentinAIGood else SentinAIDanger,
+                text = if (hasPreviousUsageData) {
+                    "${if (isDown) "↓" else "↑"} ${changeRatePercent.format(0)}%"
+                } else {
+                    "No previous data"
+                },
+                color = if (!hasPreviousUsageData || isDown) SentinAIGood else SentinAIDanger,
                 style = SentinAITextStyles.SectionTitle,
             )
-            Text(text = "vs last week", color = SentinAICaptionText, style = SentinAITextStyles.Caption)
+            if (hasPreviousUsageData) {
+                Text(text = "vs last week", color = SentinAICaptionText, style = SentinAITextStyles.Caption)
+            }
         }
     }
 }
