@@ -6,7 +6,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
@@ -23,18 +22,19 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.sentinal.presentation.analytics.AnalyticsScreen
 import com.example.sentinal.presentation.chat.ChatScreen
-import com.example.sentinal.presentation.design.SentinBg
-import com.example.sentinal.presentation.design.SentinNavy
-import com.example.sentinal.presentation.design.SentinSubtle
 import com.example.sentinal.presentation.guardian.GuardianScreen
+import com.example.sentinal.ui.theme.SentinAIBg
+import com.example.sentinal.ui.theme.SentinAIBottomBarBg
+import com.example.sentinal.ui.theme.SentinAIBottomBarBorder
+import com.example.sentinal.ui.theme.SentinAINavy
+import com.example.sentinal.ui.theme.SentinAISubtle
+import com.example.sentinal.ui.theme.SentinAITextStyles
 
 @Composable
 fun MainShellScreen() {
@@ -44,7 +44,7 @@ fun MainShellScreen() {
 
     Scaffold(
         modifier = Modifier.statusBarsPadding(),
-        containerColor = SentinBg,
+        containerColor = SentinAIBg,
         bottomBar = {
             SentinBottomBar(
                 modifier = Modifier.navigationBarsPadding(),
@@ -72,8 +72,8 @@ private fun SentinBottomBar(
         modifier = modifier
             .fillMaxWidth()
             .height(81.dp)
-            .background(Color.White.copy(alpha = 0.88f))
-            .border(width = 1.dp, color = Color(0x66E2E8F0))
+            .background(SentinAIBottomBarBg)
+            .border(width = 1.dp, color = SentinAIBottomBarBorder)
             .padding(horizontal = 36.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -90,16 +90,14 @@ private fun SentinBottomBar(
                 Icon(
                     painter = painterResource(id = destination.iconRes),
                     contentDescription = destination.label,
-                    tint = if (selected) SentinNavy else SentinSubtle,
+                    tint = if (selected) SentinAINavy else SentinAISubtle,
                     modifier = Modifier.size(20.dp),
                 )
                 Text(
                     text = destination.label,
                     modifier = Modifier.padding(top = 4.dp),
-                    color = if (selected) SentinNavy else SentinSubtle,
-                    fontSize = 11.sp,
-                    lineHeight = 16.sp,
-                    fontWeight = FontWeight.Medium,
+                    color = if (selected) SentinAINavy else SentinAISubtle,
+                    style = SentinAITextStyles.SmallLabel.copy(fontWeight = FontWeight.Medium),
                     textAlign = TextAlign.Center,
                 )
             }

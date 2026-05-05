@@ -22,11 +22,9 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.sentinal.R
@@ -38,12 +36,19 @@ import com.example.sentinal.presentation.design.MetricGlyph
 import com.example.sentinal.presentation.design.ScoreRing
 import com.example.sentinal.presentation.design.ScreenSurface
 import com.example.sentinal.presentation.design.SentinCard
-import com.example.sentinal.presentation.design.SentinDanger
-import com.example.sentinal.presentation.design.SentinInk
-import com.example.sentinal.presentation.design.SentinMuted
-import com.example.sentinal.presentation.design.SentinNavy
-import com.example.sentinal.presentation.design.SentinText
 import com.example.sentinal.presentation.design.StateMessage
+import com.example.sentinal.ui.theme.SentinAIActivityBarInactive
+import com.example.sentinal.ui.theme.SentinAIDanger
+import com.example.sentinal.ui.theme.SentinAIInfo
+import com.example.sentinal.ui.theme.SentinAIInk
+import com.example.sentinal.ui.theme.SentinAIMuted
+import com.example.sentinal.ui.theme.SentinAINavy
+import com.example.sentinal.ui.theme.SentinAIText
+import com.example.sentinal.ui.theme.SentinAIWarning
+import com.example.sentinal.ui.theme.SentinAIWhite
+import com.example.sentinal.ui.theme.SentinAIWhite60
+import com.example.sentinal.ui.theme.SentinAIWhite90
+import com.example.sentinal.ui.theme.SentinAITextStyles
 
 @Composable
 fun GuardianScreen(
@@ -181,17 +186,13 @@ private fun ResourceScoreCard(state: GuardianUiState.Success) {
                 Column {
                     Text(
                         text = "Resource Score",
-                        color = SentinText,
-                        fontSize = 20.sp,
-                        lineHeight = 28.sp,
-                        fontWeight = FontWeight.SemiBold,
+                        color = SentinAIText,
+                        style = SentinAITextStyles.SectionTitle,
                     )
                     Text(
                         text = "SYSTEM INTEGRITY",
-                        color = SentinMuted,
-                        fontSize = 12.sp,
-                        lineHeight = 16.sp,
-                        fontWeight = FontWeight.Bold,
+                        color = SentinAIMuted,
+                        style = SentinAITextStyles.Label.copy(fontWeight = FontWeight.Bold),
                     )
                 }
                 StatusPill(status = state.status)
@@ -206,9 +207,9 @@ private fun ResourceScoreCard(state: GuardianUiState.Success) {
 @Composable
 private fun StatusPill(status: GuardianStatus) {
     val color = when (status) {
-        GuardianStatus.NORMAL -> Color(0xFF466978)
-        GuardianStatus.CAUTION -> Color(0xFFD97706)
-        GuardianStatus.DANGER -> SentinDanger
+        GuardianStatus.NORMAL -> SentinAIInfo
+        GuardianStatus.CAUTION -> SentinAIWarning
+        GuardianStatus.DANGER -> SentinAIDanger
     }
     Box(
         modifier = Modifier
@@ -223,9 +224,7 @@ private fun StatusPill(status: GuardianStatus) {
             Text(
                 text = status.name.lowercase().replaceFirstChar { it.uppercase() },
                 color = color,
-                fontSize = 12.sp,
-                lineHeight = 16.sp,
-                fontWeight = FontWeight.Bold,
+                style = SentinAITextStyles.Label.copy(fontWeight = FontWeight.Bold),
             )
         }
     }
@@ -243,18 +242,16 @@ private fun ActivityCard(values: List<Float>) {
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.Bottom,
             ) {
-                Text(text = "Last Hour Activity", color = SentinText, fontSize = 16.sp, lineHeight = 24.sp)
+                Text(text = "Last Hour Activity", color = SentinAIText, style = SentinAITextStyles.Body)
                 Text(
                     text = "LIVE TRACKING",
-                    color = SentinMuted,
-                    fontSize = 12.sp,
-                    lineHeight = 16.sp,
-                    fontWeight = FontWeight.Bold,
+                    color = SentinAIMuted,
+                    style = SentinAITextStyles.Label.copy(fontWeight = FontWeight.Bold),
                 )
             }
             BarChart(
                 values = values,
-                inactiveColor = Color(0xFFD3D8DF),
+                inactiveColor = SentinAIActivityBarInactive,
                 cornerRadius = 2f,
                 modifier = Modifier.fillMaxWidth(),
             )
@@ -289,16 +286,13 @@ private fun MetricCard(
             )
             Text(
                 text = title,
-                color = SentinMuted,
-                fontSize = 12.sp,
-                lineHeight = 16.sp,
-                fontWeight = FontWeight.Bold,
+                color = SentinAIMuted,
+                style = SentinAITextStyles.Label.copy(fontWeight = FontWeight.Bold),
             )
             Text(
                 text = value,
-                color = SentinInk,
-                fontSize = 18.sp,
-                lineHeight = 27.sp,
+                color = SentinAIInk,
+                style = SentinAITextStyles.InsightTitle,
             )
         }
     }
@@ -309,7 +303,7 @@ private fun InsightCard(state: GuardianUiState.Success) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .background(SentinNavy, RoundedCornerShape(12.dp))
+            .background(SentinAINavy, RoundedCornerShape(12.dp))
             .padding(horizontal = 20.dp, vertical = 20.dp),
     ) {
         Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -320,16 +314,14 @@ private fun InsightCard(state: GuardianUiState.Success) {
                 MetricGlyph(kind = "insight")
                 Text(
                     text = state.insightTitle,
-                    color = Color.White,
-                    fontSize = 16.sp,
-                    lineHeight = 24.sp,
+                    color = SentinAIWhite,
+                    style = SentinAITextStyles.Body,
                 )
             }
             Text(
                 text = state.insightBody,
-                color = Color.White.copy(alpha = 0.9f),
-                fontSize = 16.sp,
-                lineHeight = 26.sp,
+                color = SentinAIWhite90,
+                style = SentinAITextStyles.BodyRelaxed,
             )
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -338,10 +330,8 @@ private fun InsightCard(state: GuardianUiState.Success) {
             ) {
                 Text(
                     text = "SOURCE: ${state.source.uppercase()}",
-                    color = Color.White.copy(alpha = 0.6f),
-                    fontSize = 10.sp,
-                    lineHeight = 15.sp,
-                    fontWeight = FontWeight.Normal,
+                    color = SentinAIWhite60,
+                    style = SentinAITextStyles.Tiny.copy(fontWeight = FontWeight.Normal),
                 )
 
             }
@@ -353,10 +343,8 @@ private fun InsightCard(state: GuardianUiState.Success) {
 private fun AxisLabel(text: String) {
     Text(
         text = text,
-        color = SentinMuted,
-        fontSize = 12.sp,
-        lineHeight = 16.sp,
-        fontWeight = FontWeight.Bold,
+        color = SentinAIMuted,
+        style = SentinAITextStyles.Label.copy(fontWeight = FontWeight.Bold),
     )
 }
 

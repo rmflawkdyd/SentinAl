@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -30,27 +29,23 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-
-val SentinBg = Color(0xFFF7FAFC)
-val SentinInk = Color(0xFF041632)
-val SentinNavy = Color(0xFF1B2B48)
-val SentinText = Color(0xFF181C1E)
-val SentinMuted = Color(0xFF75777E)
-val SentinSubtle = Color(0xFF94A3B8)
-val SentinCard = Color.White
-val SentinLine = Color(0xFFF1F5F9)
-val SentinPanel = Color(0xFFF1F4F6)
-val SentinAccent = Color(0xFFC3E8FA)
-val SentinMint = Color(0xFF9FF1E6)
-val SentinGood = Color(0xFF059669)
-val SentinDanger = Color(0xFFEF4444)
+import com.example.sentinal.ui.theme.SentinAIBg
+import com.example.sentinal.ui.theme.SentinAICardColor
+import com.example.sentinal.ui.theme.SentinAIChartInactive
+import com.example.sentinal.ui.theme.SentinAIInfo
+import com.example.sentinal.ui.theme.SentinAIInk
+import com.example.sentinal.ui.theme.SentinAILine
+import com.example.sentinal.ui.theme.SentinAIMuted
+import com.example.sentinal.ui.theme.SentinAINavy
+import com.example.sentinal.ui.theme.SentinAISecondaryText
+import com.example.sentinal.ui.theme.SentinAITransparent
+import com.example.sentinal.ui.theme.SentinAIWhite
+import com.example.sentinal.ui.theme.SentinAITextStyles
 
 @Composable
 fun ScreenSurface(
@@ -60,7 +55,7 @@ fun ScreenSurface(
     Box(
         modifier = modifier
             .fillMaxSize()
-            .background(SentinBg),
+            .background(SentinAIBg),
     ) {
         content()
     }
@@ -75,8 +70,8 @@ fun SentinCard(
     Box(
         modifier = modifier
             .clip(shape)
-            .background(SentinCard)
-            .border(1.dp, Color.White, shape),
+            .background(SentinAICardColor)
+            .border(1.dp, SentinAIWhite, shape),
     ) {
         content()
     }
@@ -99,30 +94,27 @@ fun StateMessage(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         if (isLoading) {
-            CircularProgressIndicator(color = SentinNavy)
+            CircularProgressIndicator(color = SentinAINavy)
             Spacer(modifier = Modifier.height(18.dp))
         }
         Text(
             text = title,
-            color = SentinInk,
-            fontSize = 20.sp,
-            lineHeight = 28.sp,
-            fontWeight = FontWeight.SemiBold,
+            color = SentinAIInk,
+            style = SentinAITextStyles.SectionTitle,
             textAlign = TextAlign.Center,
         )
         Text(
             text = message,
             modifier = Modifier.padding(top = 8.dp),
-            color = SentinMuted,
-            fontSize = 14.sp,
-            lineHeight = 22.sp,
+            color = SentinAIMuted,
+            style = SentinAITextStyles.BodySmallRelaxed,
             textAlign = TextAlign.Center,
         )
         if (buttonText != null && onButtonClick != null) {
             Button(
                 onClick = onButtonClick,
                 modifier = Modifier.padding(top = 18.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = SentinNavy),
+                colors = ButtonDefaults.buttonColors(containerColor = SentinAINavy),
                 shape = RoundedCornerShape(12.dp),
             ) {
                 Text(text = buttonText)
@@ -140,16 +132,13 @@ fun HeaderBlock(
     Column(modifier = modifier) {
         Text(
             text = title,
-            color = SentinInk,
-            fontSize = 24.sp,
-            lineHeight = 32.sp,
-            fontWeight = FontWeight.SemiBold,
+            color = SentinAIInk,
+            style = SentinAITextStyles.ScreenTitle,
         )
         Text(
             text = subtitle,
-            color = Color(0xFF44474D),
-            fontSize = 14.sp,
-            lineHeight = 20.sp,
+            color = SentinAISecondaryText,
+            style = SentinAITextStyles.BodySmall,
         )
     }
 }
@@ -162,9 +151,9 @@ fun ScoreRing(
     Box(modifier = modifier.size(224.dp), contentAlignment = Alignment.Center) {
         Canvas(modifier = Modifier.size(192.dp)) {
             val stroke = Stroke(width = 10.dp.toPx(), cap = StrokeCap.Round)
-            drawCircle(SentinLine, style = stroke)
+            drawCircle(SentinAILine, style = stroke)
             drawArc(
-                color = SentinNavy,
+                color = SentinAINavy,
                 startAngle = -90f,
                 sweepAngle = 360f * (score.coerceIn(0, 100) / 100f),
                 useCenter = false,
@@ -174,17 +163,13 @@ fun ScoreRing(
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text(
                 text = score.toString(),
-                color = SentinInk,
-                fontSize = 40.sp,
-                lineHeight = 48.sp,
-                fontWeight = FontWeight.Light,
+                color = SentinAIInk,
+                style = SentinAITextStyles.MetricLarge,
             )
             Text(
                 text = "/100",
-                color = SentinMuted,
-                fontSize = 12.sp,
-                lineHeight = 16.sp,
-                fontWeight = FontWeight.Bold,
+                color = SentinAIMuted,
+                style = SentinAITextStyles.Label.copy(fontWeight = FontWeight.Bold),
             )
         }
     }
@@ -195,8 +180,8 @@ fun BarChart(
     values: List<Float>,
     modifier: Modifier = Modifier,
     highlightIndex: Int? = null,
-    activeColor: Color = SentinNavy,
-    inactiveColor: Color = Color(0xFFE8EDF3),
+    activeColor: Color = SentinAINavy,
+    inactiveColor: Color = SentinAIChartInactive,
     cornerRadius: Float = 8f,
     hideZeroValues: Boolean = false,
 ) {
@@ -215,7 +200,7 @@ fun BarChart(
                     .clip(RoundedCornerShape(topStart = cornerRadius.dp, topEnd = cornerRadius.dp))
                     .background(
                         if (hideZeroValues && value <= 0f) {
-                            Color.Transparent
+                            SentinAITransparent
                         } else if (highlightIndex == index) {
                             activeColor
                         } else {
@@ -251,7 +236,7 @@ fun SegmentedUsageBar(
 @Composable
 fun MetricGlyph(kind: String, modifier: Modifier = Modifier) {
     Canvas(modifier = modifier.size(18.dp)) {
-        val color = Color(0xFF466978)
+        val color = SentinAIInfo
         val stroke = Stroke(width = 1.8f, cap = StrokeCap.Round)
         when (kind) {
             "memory" -> {
@@ -286,9 +271,9 @@ fun BottomInputFade(modifier: Modifier = Modifier, content: @Composable () -> Un
             .fillMaxWidth()
             .background(
                 Brush.verticalGradient(
-                    0f to Color.Transparent,
-                    0.45f to SentinBg,
-                    1f to SentinBg,
+                    0f to SentinAITransparent,
+                    0.45f to SentinAIBg,
+                    1f to SentinAIBg,
                 ),
             )
             //.padding(start = 0.dp, end = 0.dp, top = 16.dp, bottom = 8.dp)

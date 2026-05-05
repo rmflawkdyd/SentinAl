@@ -29,7 +29,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.core.graphics.drawable.toBitmap
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -40,17 +39,24 @@ import com.example.sentinal.presentation.design.HeaderBlock
 import com.example.sentinal.presentation.design.LegendDot
 import com.example.sentinal.presentation.design.ScreenSurface
 import com.example.sentinal.presentation.design.SegmentedUsageBar
-import com.example.sentinal.presentation.design.SentinAccent
 import com.example.sentinal.presentation.design.SentinCard
-import com.example.sentinal.presentation.design.SentinDanger
-import com.example.sentinal.presentation.design.SentinGood
-import com.example.sentinal.presentation.design.SentinInk
-import com.example.sentinal.presentation.design.SentinLine
-import com.example.sentinal.presentation.design.SentinMint
-import com.example.sentinal.presentation.design.SentinMuted
-import com.example.sentinal.presentation.design.SentinNavy
-import com.example.sentinal.presentation.design.SentinSubtle
 import com.example.sentinal.presentation.design.StateMessage
+import com.example.sentinal.ui.theme.SentinAIAccent
+import com.example.sentinal.ui.theme.SentinAIAppIconBg
+import com.example.sentinal.ui.theme.SentinAICaptionText
+import com.example.sentinal.ui.theme.SentinAICategoryRest
+import com.example.sentinal.ui.theme.SentinAIDanger
+import com.example.sentinal.ui.theme.SentinAIGood
+import com.example.sentinal.ui.theme.SentinAIInfo
+import com.example.sentinal.ui.theme.SentinAIInk
+import com.example.sentinal.ui.theme.SentinAILine
+import com.example.sentinal.ui.theme.SentinAIMint
+import com.example.sentinal.ui.theme.SentinAIMuted
+import com.example.sentinal.ui.theme.SentinAINavy
+import com.example.sentinal.ui.theme.SentinAISecondaryText
+import com.example.sentinal.ui.theme.SentinAISubtle
+import com.example.sentinal.ui.theme.SentinAIText
+import com.example.sentinal.ui.theme.SentinAITextStyles
 import java.time.LocalDate
 
 @Composable
@@ -163,24 +169,19 @@ private fun WeeklyUsageCard(summary: AnalyticsSummary) {
         ) {
             Text(
                 text = "TOTAL USAGE",
-                color = Color(0xFF466978),
-                fontSize = 12.sp,
-                lineHeight = 16.sp,
-                fontWeight = FontWeight.Bold,
-                letterSpacing = 1.2.sp,
+                color = SentinAIInfo,
+                style = SentinAITextStyles.Overline.copy(fontWeight = FontWeight.Bold),
             )
             Text(
                 text = summary.totalUsageMillis.toCompactHoursText(),
-                color = SentinInk,
-                fontSize = 40.sp,
-                lineHeight = 48.sp,
-                fontWeight = FontWeight.Light,
+                color = SentinAIInk,
+                style = SentinAITextStyles.MetricLarge,
             )
             BarChart(
                 values = chartValues,
                 highlightIndex = highlightIndex,
-                activeColor = SentinInk,
-                inactiveColor = SentinLine,
+                activeColor = SentinAIInk,
+                inactiveColor = SentinAILine,
                 hideZeroValues = true,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -198,10 +199,10 @@ private fun WeeklyUsageCard(summary: AnalyticsSummary) {
                 labels.forEachIndexed { index, day ->
                     Text(
                         text = day,
-                        color = if (index == highlightIndex) SentinInk else SentinSubtle,
-                        fontSize = 10.sp,
-                        lineHeight = 15.sp,
-                        fontWeight = if (index == highlightIndex) FontWeight.Bold else FontWeight.Normal,
+                        color = if (index == highlightIndex) SentinAIInk else SentinAISubtle,
+                        style = SentinAITextStyles.Tiny.copy(
+                            fontWeight = if (index == highlightIndex) FontWeight.Bold else FontWeight.Normal,
+                        ),
                         textAlign = TextAlign.Center,
                     )
                 }
@@ -220,19 +221,15 @@ private fun ChangeCard(changeRatePercent: Float, modifier: Modifier = Modifier) 
         ) {
             Text(
                 text = "Change",
-                color = Color(0xFF44474D),
-                fontSize = 12.sp,
-                lineHeight = 16.sp,
-                fontWeight = FontWeight.Bold,
+                color = SentinAISecondaryText,
+                style = SentinAITextStyles.Label.copy(fontWeight = FontWeight.Bold),
             )
             Text(
                 text = "${if (isDown) "↓" else "↑"} ${changeRatePercent.format(0)}%",
-                color = if (isDown) SentinGood else SentinDanger,
-                fontSize = 20.sp,
-                lineHeight = 28.sp,
-                fontWeight = FontWeight.SemiBold,
+                color = if (isDown) SentinAIGood else SentinAIDanger,
+                style = SentinAITextStyles.SectionTitle,
             )
-            Text(text = "vs last week", color = Color(0xFF64748B), fontSize = 12.sp, lineHeight = 18.sp)
+            Text(text = "vs last week", color = SentinAICaptionText, style = SentinAITextStyles.Caption)
         }
     }
 }
@@ -246,32 +243,28 @@ private fun NightUsageCard(nightUsageRatePercent: Float, modifier: Modifier = Mo
         ) {
             Text(
                 text = "Night usage",
-                color = Color(0xFF44474D),
-                fontSize = 12.sp,
-                lineHeight = 16.sp,
-                fontWeight = FontWeight.Bold,
+                color = SentinAISecondaryText,
+                style = SentinAITextStyles.Label.copy(fontWeight = FontWeight.Bold),
             )
             Text(
                 text = "${nightUsageRatePercent.format(0)}%",
-                color = SentinInk,
-                fontSize = 20.sp,
-                lineHeight = 28.sp,
-                fontWeight = FontWeight.SemiBold,
+                color = SentinAIInk,
+                style = SentinAITextStyles.SectionTitle,
             )
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(6.dp)
-                    .background(SentinLine, RoundedCornerShape(999.dp)),
+                    .background(SentinAILine, RoundedCornerShape(999.dp)),
             ) {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth((nightUsageRatePercent / 100f).coerceIn(0f, 1f))
                         .fillMaxHeight()
-                        .background(SentinNavy, RoundedCornerShape(999.dp)),
+                        .background(SentinAINavy, RoundedCornerShape(999.dp)),
                 )
             }
-            Text(text = "10pm - 6am", color = Color(0xFF64748B), fontSize = 12.sp, lineHeight = 18.sp)
+            Text(text = "10pm - 6am", color = SentinAICaptionText, style = SentinAITextStyles.Caption)
         }
     }
 }
@@ -284,18 +277,16 @@ private fun TopAppsSection(apps: List<AppUsagePoint>) {
     ) {
         Text(
             text = "Top 5 Apps",
-            color = SentinInk,
-            fontSize = 20.sp,
-            lineHeight = 28.sp,
-            fontWeight = FontWeight.SemiBold,
+            color = SentinAIInk,
+            style = SentinAITextStyles.SectionTitle,
         )
         if (apps.isEmpty()) {
             SentinCard(modifier = Modifier.fillMaxWidth()) {
                 Text(
                     text = "앱별 사용량 데이터가 없습니다.",
                     modifier = Modifier.padding(20.dp),
-                    color = SentinMuted,
-                    fontSize = 14.sp,
+                    color = SentinAIMuted,
+                    style = SentinAITextStyles.BodySmall,
                 )
             }
         } else {
@@ -323,7 +314,7 @@ private fun AppUsageRow(index: Int, app: AppUsagePoint) {
                 Box(
                     modifier = Modifier
                         .size(40.dp)
-                        .background(Color(0xFFF8FAFC), RoundedCornerShape(12.dp)),
+                        .background(SentinAIAppIconBg, RoundedCornerShape(12.dp)),
                     contentAlignment = Alignment.Center,
                 ) {
                     AppIconBadge(packageName = app.packageName)
@@ -332,34 +323,28 @@ private fun AppUsageRow(index: Int, app: AppUsagePoint) {
                     Row() {
                         Text(
                             text = app.displayName(),
-                            color = SentinInk,
-                            fontSize = 16.sp,
-                            lineHeight = 24.sp,
-                            fontWeight = FontWeight.SemiBold,
+                            color = SentinAIInk,
+                            style = SentinAITextStyles.Body.copy(fontWeight = FontWeight.SemiBold),
                         )
                         if (app.appName == null) {
                             Text(
                                 text = app.packageName,
-                                color = SentinSubtle,
-                                fontSize = 11.sp,
-                                lineHeight = 16.sp,
+                                color = SentinAISubtle,
+                                style = SentinAITextStyles.SmallLabel,
                             )
                         }
                         Spacer(modifier = Modifier.size(12.dp))
                         Text(
                             text = app.usageMillis.toCompactHoursText(),
-                            color = SentinInk,
-                            fontSize = 16.sp,
-                            lineHeight = 24.sp,
-                            fontWeight = FontWeight.Bold,
+                            color = SentinAIInk,
+                            style = SentinAITextStyles.Body.copy(fontWeight = FontWeight.Bold),
                         )
                     }
 
                     Text(
                         text = "${app.launchCount} launches",
-                        color = Color(0xFF44474D),
-                        fontSize = 14.sp,
-                        lineHeight = 20.sp,
+                        color = SentinAISecondaryText,
+                        style = SentinAITextStyles.BodySmall,
                     )
                 }
             }
@@ -393,9 +378,9 @@ private fun AppIconBadge(
 private fun CategoryUsageCard(summary: AnalyticsSummary) {
     val totalUsageMillis = summary.categoryUsages.sumOf { it.usageMillis }.takeIf { it > 0L }
     val categories = summary.categoryUsages.take(4)
-    val colors = listOf(SentinNavy, SentinAccent, SentinMint, Color(0xFFE2E8F0))
+    val colors = listOf(SentinAINavy, SentinAIAccent, SentinAIMint, SentinAICategoryRest)
     val segments = if (totalUsageMillis == null || categories.isEmpty()) {
-        listOf(45f to SentinNavy, 30f to SentinAccent, 15f to SentinMint, 10f to Color(0xFFE2E8F0))
+        listOf(45f to SentinAINavy, 30f to SentinAIAccent, 15f to SentinAIMint, 10f to SentinAICategoryRest)
     } else {
         categories.mapIndexed { index, item -> item.usageMillis.toFloat() to colors[index % colors.size] }
     }
@@ -406,10 +391,8 @@ private fun CategoryUsageCard(summary: AnalyticsSummary) {
     ) {
         Text(
             text = "Category Usage",
-            color = SentinInk,
-            fontSize = 20.sp,
-            lineHeight = 28.sp,
-            fontWeight = FontWeight.SemiBold,
+            color = SentinAIInk,
+            style = SentinAITextStyles.SectionTitle,
         )
         SentinCard(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp)) {
             Column(
@@ -420,8 +403,8 @@ private fun CategoryUsageCard(summary: AnalyticsSummary) {
                 if (totalUsageMillis == null || categories.isEmpty()) {
                     Text(
                         text = "카테고리 데이터가 없습니다.",
-                        color = SentinMuted,
-                        fontSize = 14.sp,
+                        color = SentinAIMuted,
+                        style = SentinAITextStyles.BodySmall,
                     )
                 } else {
                     Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
@@ -461,13 +444,11 @@ private fun CategoryLegendItem(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         LegendDot(color)
-        Text(text = name, color = Color(0xFF181C1E), fontSize = 14.sp, lineHeight = 20.sp)
+        Text(text = name, color = SentinAIText, style = SentinAITextStyles.BodySmall)
         Text(
             text = value,
-            color = SentinInk,
-            fontSize = 14.sp,
-            lineHeight = 20.sp,
-            fontWeight = FontWeight.Bold,
+            color = SentinAIInk,
+            style = SentinAITextStyles.BodySmall.copy(fontWeight = FontWeight.Bold),
         )
     }
 }

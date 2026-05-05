@@ -17,7 +17,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -28,18 +30,16 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.sentinal.R
@@ -49,12 +49,17 @@ import com.example.sentinal.presentation.design.BottomInputFade
 import com.example.sentinal.presentation.design.HeaderBlock
 import com.example.sentinal.presentation.design.ScreenSurface
 import com.example.sentinal.presentation.design.SentinCard
-import com.example.sentinal.presentation.design.SentinInk
-import com.example.sentinal.presentation.design.SentinMuted
-import com.example.sentinal.presentation.design.SentinNavy
-import com.example.sentinal.presentation.design.SentinPanel
-import com.example.sentinal.presentation.design.SentinText
 import com.example.sentinal.presentation.design.StateMessage
+import com.example.sentinal.ui.theme.SentinAITextStyles
+import com.example.sentinal.ui.theme.SentinAIInk
+import com.example.sentinal.ui.theme.SentinAIInputBorder
+import com.example.sentinal.ui.theme.SentinAIMetric
+import com.example.sentinal.ui.theme.SentinAIMuted
+import com.example.sentinal.ui.theme.SentinAINavy
+import com.example.sentinal.ui.theme.SentinAIPanel
+import com.example.sentinal.ui.theme.SentinAIText
+import com.example.sentinal.ui.theme.SentinAITransparent
+import com.example.sentinal.ui.theme.SentinAIWhite
 
 @Composable
 fun ChatScreen(
@@ -113,6 +118,8 @@ private fun ChatEmpty(
     modifier: Modifier = Modifier,
     inputBottomPadding: Dp,
 ) {
+    val listState = rememberLazyListState()
+
     ScreenSurface(modifier) {
         Column(
             modifier = Modifier
@@ -130,6 +137,7 @@ private fun ChatEmpty(
                     input = "",
                     isSending = false,
                     inputBottomPadding = inputBottomPadding,
+                    listState = listState,
                     onInputChanged = {},
                     onSendClick = {},
                 ) {
@@ -172,6 +180,13 @@ private fun ChatSuccess(
     onInputChanged: (String) -> Unit,
     onSendClick: () -> Unit,
 ) {
+    val listState = rememberLazyListState()
+
+    LaunchedEffect(state.message.size, state.isSending) {
+        val lastItemIndex = state.message.size + if (state.isSending) 1 else 0
+        listState.animateScrollToItem(lastItemIndex)
+    }
+
     ScreenSurface(modifier) {
         Column(
             modifier = Modifier
@@ -189,6 +204,7 @@ private fun ChatSuccess(
                     input = state.input,
                     isSending = state.isSending,
                     inputBottomPadding = inputBottomPadding,
+                    listState = listState,
                     onInputChanged = onInputChanged,
                     onSendClick = onSendClick,
                 ) {
@@ -199,7 +215,7 @@ private fun ChatSuccess(
                     if (state.isSending) {
                         item {
                             CircularProgressIndicator(
-                                color = SentinNavy,
+                                color = SentinAINavy,
                             )
                         }
                     }
@@ -218,6 +234,7 @@ private fun ChatChrome(
     input: String,
     isSending: Boolean,
     inputBottomPadding: Dp,
+    listState: LazyListState,
     onInputChanged: (String) -> Unit,
     onSendClick: () -> Unit,
     content: androidx.compose.foundation.lazy.LazyListScope.() -> Unit,
@@ -227,6 +244,7 @@ private fun ChatChrome(
             modifier = Modifier
                 .fillMaxWidth()
                 .fillMaxSize(),
+            state = listState,
             contentPadding = PaddingValues(bottom = 136.dp),
             verticalArrangement = Arrangement.Top,
             content = content,
@@ -266,16 +284,15 @@ private fun UserMessage(message: ChatMessage) {
             modifier = Modifier
                 .widthIn(max = 298.dp)
                 .background(
-                    SentinNavy,
+                    SentinAINavy,
                     RoundedCornerShape(topStart = 16.dp, bottomStart = 16.dp, bottomEnd = 16.dp),
                 )
                 .padding(horizontal = 20.dp, vertical = 12.dp),
         ) {
             Text(
                 text = message.text,
-                color = Color.White,
-                fontSize = 16.sp,
-                lineHeight = 24.sp,
+                color = SentinAIWhite,
+                style = SentinAITextStyles.Body,
             )
         }
     }
@@ -289,9 +306,8 @@ private fun AiMessage(message: ChatMessage) {
     ) {
         Text(
             text = message.source ?: "SentinAI Rule Engine Analysis",
-            color = SentinInk,
-            fontSize = 11.sp,
-            lineHeight = 16.sp,
+            color = SentinAIInk,
+            style = SentinAITextStyles.SmallLabel,
         )
         SentinCard(
             modifier = Modifier.widthIn(max = 315.dp),
@@ -303,9 +319,8 @@ private fun AiMessage(message: ChatMessage) {
             ) {
                 Text(
                     text = message.text,
-                    color = SentinText,
-                    fontSize = 16.sp,
-                    lineHeight = 26.sp,
+                    color = SentinAIText,
+                    style = SentinAITextStyles.BodyRelaxed,
                 )
             }
         }
@@ -317,12 +332,12 @@ private fun AiMessage(message: ChatMessage) {
 private fun AiMetric(label: String, value: String, modifier: Modifier = Modifier) {
     Column(
         modifier = modifier
-            .background(SentinPanel, RoundedCornerShape(8.dp))
+            .background(SentinAIPanel, RoundedCornerShape(8.dp))
             .padding(vertical = 12.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Text(text = label, color = SentinMuted, fontSize = 10.sp, lineHeight = 15.sp)
-        Text(text = value, color = Color(0xFF406372), fontSize = 16.sp, lineHeight = 24.sp)
+        Text(text = label, color = SentinAIMuted, style = SentinAITextStyles.Tiny)
+        Text(text = value, color = SentinAIMetric, style = SentinAITextStyles.Body)
     }
 }
 
@@ -340,8 +355,8 @@ private fun ChatInput(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .background(Color.White, RoundedCornerShape(16.dp))
-            .border(1.dp, Color(0x99E2E8F0), RoundedCornerShape(16.dp))
+            .background(SentinAIWhite, RoundedCornerShape(16.dp))
+            .border(1.dp, SentinAIInputBorder, RoundedCornerShape(16.dp))
             .padding(8.dp),
         horizontalArrangement = Arrangement.spacedBy(6.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -351,19 +366,19 @@ private fun ChatInput(
             onValueChange = onInputChanged,
             modifier = Modifier.weight(1f),
             placeholder = {
-                Text(text = "What should I optimize?", color = SentinMuted)
+                Text(text = "What should I optimize?", color = SentinAIMuted)
             },
             singleLine = false,
             maxLines = 4,
             colors = OutlinedTextFieldDefaults.colors(
-                focusedTextColor = SentinText,
-                unfocusedTextColor = SentinText,
-                disabledTextColor = SentinText,
-                focusedBorderColor = Color.Transparent,
-                unfocusedBorderColor = Color.Transparent,
-                disabledBorderColor = Color.Transparent,
-                focusedContainerColor = Color.Transparent,
-                unfocusedContainerColor = Color.Transparent,
+                focusedTextColor = SentinAIText,
+                unfocusedTextColor = SentinAIText,
+                disabledTextColor = SentinAIText,
+                focusedBorderColor = SentinAITransparent,
+                unfocusedBorderColor = SentinAITransparent,
+                disabledBorderColor = SentinAITransparent,
+                focusedContainerColor = SentinAITransparent,
+                unfocusedContainerColor = SentinAITransparent,
             ),
         )
         Button(
@@ -375,10 +390,10 @@ private fun ChatInput(
             enabled = input.isNotBlank() && !isSending,
             modifier = Modifier.size(44.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = SentinNavy,
-                contentColor = Color.White,
-                disabledContainerColor = SentinNavy,
-                disabledContentColor = Color.White,
+                containerColor = SentinAINavy,
+                contentColor = SentinAIWhite,
+                disabledContainerColor = SentinAINavy,
+                disabledContentColor = SentinAIWhite,
             ),
             shape = RoundedCornerShape(12.dp),
             contentPadding = PaddingValues(0.dp),
@@ -386,7 +401,7 @@ private fun ChatInput(
             Icon(
                 painter = painterResource(id = R.drawable.ic_send),
                 contentDescription = "Send message",
-                tint = Color.White,
+                tint = SentinAIWhite,
                 modifier = Modifier.size(18.dp),
             )
         }

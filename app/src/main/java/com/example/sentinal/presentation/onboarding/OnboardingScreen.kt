@@ -26,12 +26,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
@@ -40,11 +38,14 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.sentinal.R
 import com.example.sentinal.presentation.design.ScreenSurface
 import com.example.sentinal.presentation.design.SentinCard
-import com.example.sentinal.presentation.design.SentinInk
-import com.example.sentinal.presentation.design.SentinLine
-import com.example.sentinal.presentation.design.SentinNavy
-import com.example.sentinal.presentation.design.SentinText
 import com.example.sentinal.presentation.design.StateMessage
+import com.example.sentinal.ui.theme.SentinAIInk
+import com.example.sentinal.ui.theme.SentinAILine
+import com.example.sentinal.ui.theme.SentinAINavy
+import com.example.sentinal.ui.theme.SentinAISecondaryText
+import com.example.sentinal.ui.theme.SentinAIText
+import com.example.sentinal.ui.theme.SentinAIWhite
+import com.example.sentinal.ui.theme.SentinAITextStyles
 
 @Composable
 fun OnboardingScreen(
@@ -165,10 +166,8 @@ private fun OnboardingHeader() {
         ) {
             Text(
                 text = "SentinAI",
-                color = SentinNavy,
-                fontSize = 22.sp,
-                lineHeight = 32.sp,
-                fontWeight = FontWeight.Bold,
+                color = SentinAINavy,
+                style = SentinAITextStyles.AppTitle,
             )
         }
     }
@@ -184,18 +183,15 @@ private fun IntroSection() {
     ) {
         Text(
             text = "Turn usage access into private insights",
-            color = SentinInk,
-            fontSize = 24.sp,
-            lineHeight = 28.sp,
-            fontWeight = FontWeight.SemiBold,
+            color = SentinAIInk,
+            style = SentinAITextStyles.HeroTitle,
             textAlign = TextAlign.Center,
         )
         Text(
             text = "Usage Access lets SentinAI summarize activity and device signals on this device only.",
             modifier = Modifier.padding(top = 10.dp),
-            color = Color(0xFF44474D),
-            fontSize = 15.sp,
-            lineHeight = 22.sp,
+            color = SentinAISecondaryText,
+            style = SentinAITextStyles.BodyMedium,
             textAlign = TextAlign.Center,
         )
     }
@@ -250,9 +246,8 @@ private fun PermissionBullet(
         )
         Text(
             text = text,
-            color = SentinText,
-            fontSize = 15.sp,
-            lineHeight = 22.sp,
+            color = SentinAIText,
+            style = SentinAITextStyles.BodyMedium,
             modifier = Modifier.weight(1f),
         )
     }
@@ -275,7 +270,7 @@ private fun OnboardingFooter(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(52.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = SentinNavy),
+            colors = ButtonDefaults.buttonColors(containerColor = SentinAINavy),
             shape = RoundedCornerShape(16.dp),
         ) {
             Row(
@@ -284,16 +279,14 @@ private fun OnboardingFooter(
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_accept),
-                    tint = Color.White,
+                    tint = SentinAIWhite,
                     contentDescription = "",
                     modifier = Modifier.size(18.dp),
                 )
                 Text(
                     text = "Accept",
-                    color = Color.White,
-                    fontSize = 16.sp,
-                    lineHeight = 24.sp,
-                    fontWeight = FontWeight.SemiBold,
+                    color = SentinAIWhite,
+                    style = SentinAITextStyles.Body.copy(fontWeight = FontWeight.SemiBold),
                 )
             }
         }
@@ -302,21 +295,16 @@ private fun OnboardingFooter(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(54.dp),
-            colors = ButtonDefaults.outlinedButtonColors(contentColor = SentinNavy),
+            colors = ButtonDefaults.outlinedButtonColors(contentColor = SentinAINavy),
             shape = RoundedCornerShape(16.dp),
-            border = BorderStroke(1.dp, SentinLine),
+            border = BorderStroke(1.dp, SentinAILine),
         ) {
             Text(
                 text = "Decline",
-                fontSize = 16.sp,
-                lineHeight = 24.sp,
-                fontWeight = FontWeight.SemiBold,
+                style = SentinAITextStyles.Body.copy(fontWeight = FontWeight.SemiBold),
             )
         }
 
     }
 }
-
-
-
 
