@@ -2,6 +2,7 @@ package com.example.sentinal.presentation.analytics
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.Image
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,12 +27,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toBitmap
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.sentinal.R
 import com.example.sentinal.domain.model.AnalyticsSummary
 import com.example.sentinal.domain.model.AppUsagePoint
 import com.example.sentinal.presentation.design.BarChart
@@ -88,8 +91,8 @@ fun AnalyticsScreen(
 private fun AnalyticsLoading(modifier: Modifier = Modifier) {
     ScreenSurface(modifier) {
         StateMessage(
-            title = "Analytics",
-            message = "주간 분석 데이터를 불러오는 중입니다.",
+            title = stringResource(R.string.analytics_title),
+            message = stringResource(R.string.analytics_loading_message),
             isLoading = true,
         )
     }
@@ -102,9 +105,9 @@ private fun AnalyticsEmpty(
 ) {
     ScreenSurface(modifier) {
         StateMessage(
-            title = "아직 분석할 사용 데이터가 없습니다.",
-            message = "일별 집계가 만들어지면 주간 리포트가 표시됩니다.",
-            buttonText = "다시 시도",
+            title = stringResource(R.string.analytics_empty_title),
+            message = stringResource(R.string.analytics_empty_message),
+            buttonText = stringResource(R.string.common_retry),
             onButtonClick = onReload,
         )
     }
@@ -118,9 +121,9 @@ private fun AnalyticsError(
 ) {
     ScreenSurface(modifier) {
         StateMessage(
-            title = "분석 데이터를 불러오지 못했습니다.",
+            title = stringResource(R.string.analytics_error_title),
             message = message,
-            buttonText = "다시 시도",
+            buttonText = stringResource(R.string.common_retry),
             onButtonClick = onReload,
         )
     }
@@ -139,7 +142,10 @@ private fun AnalyticsSuccess(
                 .padding(horizontal = 20.dp, vertical = 24.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            HeaderBlock("Analytics", "Weekly usage report")
+            HeaderBlock(
+                title = stringResource(R.string.analytics_title),
+                subtitle = stringResource(R.string.analytics_subtitle),
+            )
             WeeklyUsageCard(summary)
             Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                 ChangeCard(
@@ -164,7 +170,7 @@ private fun WeeklyUsageCard(summary: AnalyticsSummary) {
         .indices
         .filter { chartValues[it] > 0f }
         .maxByOrNull { chartValues[it] }
-    val weekdayLabels = summary.dailyUsages.map { it.dateEpoch.toWeekdayLabel() }
+    val weekdayLabels = summary.dailyUsages.map { stringResource(it.dateEpoch.toWeekdayLabelRes()) }
 
     SentinCard(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp)) {
         Column(
@@ -172,7 +178,7 @@ private fun WeeklyUsageCard(summary: AnalyticsSummary) {
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(
-                text = "TOTAL USAGE",
+                text = stringResource(R.string.analytics_total_usage),
                 color = SentinAIInfo,
                 style = SentinAITextStyles.Overline.copy(fontWeight = FontWeight.Bold),
             )
@@ -198,7 +204,15 @@ private fun WeeklyUsageCard(summary: AnalyticsSummary) {
                 val labels = if (weekdayLabels.size == chartValues.size) {
                     weekdayLabels
                 } else {
-                    listOf("M", "T", "W", "T", "F", "S", "S")
+                    listOf(
+                        stringResource(R.string.weekday_monday),
+                        stringResource(R.string.weekday_tuesday),
+                        stringResource(R.string.weekday_wednesday),
+                        stringResource(R.string.weekday_thursday),
+                        stringResource(R.string.weekday_friday),
+                        stringResource(R.string.weekday_saturday),
+                        stringResource(R.string.weekday_sunday),
+                    )
                 }
                 labels.forEachIndexed { index, day ->
                     Text(
@@ -228,7 +242,7 @@ private fun ChangeCard(
             verticalArrangement = Arrangement.SpaceBetween,
         ) {
             Text(
-                text = "Change",
+                text = stringResource(R.string.analytics_change),
                 color = SentinAISecondaryText,
                 style = SentinAITextStyles.Label.copy(fontWeight = FontWeight.Bold),
             )
@@ -236,13 +250,17 @@ private fun ChangeCard(
                 text = if (hasPreviousUsageData) {
                     "${if (isDown) "↓" else "↑"} ${changeRatePercent.format(0)}%"
                 } else {
-                    "No previous data"
+                    stringResource(R.string.analytics_no_previous_data)
                 },
                 color = if (!hasPreviousUsageData || isDown) SentinAIGood else SentinAIDanger,
                 style = SentinAITextStyles.SectionTitle,
             )
             if (hasPreviousUsageData) {
-                Text(text = "vs last week", color = SentinAICaptionText, style = SentinAITextStyles.Caption)
+                Text(
+                    text = stringResource(R.string.analytics_vs_last_week),
+                    color = SentinAICaptionText,
+                    style = SentinAITextStyles.Caption,
+                )
             }
         }
     }
@@ -256,7 +274,7 @@ private fun NightUsageCard(nightUsageRatePercent: Float, modifier: Modifier = Mo
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             Text(
-                text = "Night usage",
+                text = stringResource(R.string.analytics_night_usage),
                 color = SentinAISecondaryText,
                 style = SentinAITextStyles.Label.copy(fontWeight = FontWeight.Bold),
             )
@@ -278,7 +296,11 @@ private fun NightUsageCard(nightUsageRatePercent: Float, modifier: Modifier = Mo
                         .background(SentinAINavy, RoundedCornerShape(999.dp)),
                 )
             }
-            Text(text = "10pm - 6am", color = SentinAICaptionText, style = SentinAITextStyles.Caption)
+            Text(
+                text = stringResource(R.string.analytics_night_range),
+                color = SentinAICaptionText,
+                style = SentinAITextStyles.Caption,
+            )
         }
     }
 }
@@ -290,14 +312,14 @@ private fun TopAppsSection(apps: List<AppUsagePoint>) {
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         Text(
-            text = "Top 5 Apps",
+            text = stringResource(R.string.analytics_top_apps),
             color = SentinAIInk,
             style = SentinAITextStyles.SectionTitle,
         )
         if (apps.isEmpty()) {
             SentinCard(modifier = Modifier.fillMaxWidth()) {
                 Text(
-                    text = "앱별 사용량 데이터가 없습니다.",
+                    text = stringResource(R.string.analytics_app_usage_empty),
                     modifier = Modifier.padding(20.dp),
                     color = SentinAIMuted,
                     style = SentinAITextStyles.BodySmall,
@@ -356,7 +378,7 @@ private fun AppUsageRow(index: Int, app: AppUsagePoint) {
                     }
 
                     Text(
-                        text = "${app.launchCount} launches",
+                        text = stringResource(R.string.analytics_launch_count_format, app.launchCount),
                         color = SentinAISecondaryText,
                         style = SentinAITextStyles.BodySmall,
                     )
@@ -404,7 +426,7 @@ private fun CategoryUsageCard(summary: AnalyticsSummary) {
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         Text(
-            text = "Category Usage",
+            text = stringResource(R.string.analytics_category_usage),
             color = SentinAIInk,
             style = SentinAITextStyles.SectionTitle,
         )
@@ -416,7 +438,7 @@ private fun CategoryUsageCard(summary: AnalyticsSummary) {
                 SegmentedUsageBar(segments = segments, modifier = Modifier.fillMaxWidth())
                 if (totalUsageMillis == null || categories.isEmpty()) {
                     Text(
-                        text = "카테고리 데이터가 없습니다.",
+                        text = stringResource(R.string.analytics_category_empty),
                         color = SentinAIMuted,
                         style = SentinAITextStyles.BodySmall,
                     )
@@ -488,25 +510,27 @@ private fun String.toFallbackAppName(): String {
     }
 }
 
-private fun Long.toWeekdayLabel(): String {
+@StringRes
+private fun Long.toWeekdayLabelRes(): Int {
     return when (LocalDate.ofEpochDay(this).dayOfWeek.value) {
-        1 -> "M"
-        2 -> "T"
-        3 -> "W"
-        4 -> "T"
-        5 -> "F"
-        6 -> "S"
-        else -> "S"
+        1 -> R.string.weekday_monday
+        2 -> R.string.weekday_tuesday
+        3 -> R.string.weekday_wednesday
+        4 -> R.string.weekday_thursday
+        5 -> R.string.weekday_friday
+        6 -> R.string.weekday_saturday
+        else -> R.string.weekday_sunday
     }
 }
 
+@Composable
 private fun Long.toCompactHoursText(): String {
     val totalMinutes = this / (1000L * 60L)
     val hours = totalMinutes / 60L
     val minutes = totalMinutes % 60L
     return if (hours > 0L) {
-        "${hours}h ${minutes}m"
+        stringResource(R.string.analytics_usage_hours_minutes_format, hours, minutes)
     } else {
-        "${minutes}m"
+        stringResource(R.string.analytics_usage_minutes_format, minutes)
     }
 }

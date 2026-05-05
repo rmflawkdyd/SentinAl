@@ -1,22 +1,23 @@
 package com.example.sentinal.presentation.main
 
 import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import com.example.sentinal.R
 
 enum class MainDestination(
-    val label: String,
-    @DrawableRes val iconRes: Int,
+    @param:StringRes val labelRes: Int,
+    @param:DrawableRes val iconRes: Int,
 ) {
     Dashboard(
-        label = "Dashboard",
+        labelRes = R.string.nav_dashboard,
         iconRes = R.drawable.ic_dashboard,
     ),
     Analytics(
-        label = "Analytics",
+        labelRes = R.string.nav_analytics,
         iconRes = R.drawable.ic_analytics,
     ),
     Chat(
-        label = "AI Chat",
+        labelRes = R.string.nav_chat,
         iconRes = R.drawable.ic_chat,
     ),
 }

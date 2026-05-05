@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.annotation.StringRes
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -23,6 +24,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -86,8 +88,8 @@ fun GuardianScreen(
 private fun GuardianLoading(modifier: Modifier = Modifier) {
     ScreenSurface(modifier) {
         StateMessage(
-            title = "Guardian",
-            message = "최근 데이터를 불러오는 중입니다.",
+            title = stringResource(R.string.guardian_title),
+            message = stringResource(R.string.guardian_loading_message),
             isLoading = true,
         )
     }
@@ -100,9 +102,9 @@ private fun GuardianEmpty(
 ) {
     ScreenSurface(modifier) {
         StateMessage(
-            title = "표시할 Guardian 데이터가 없습니다.",
-            message = "UsageStats 권한 또는 최근 집계 데이터가 필요합니다.",
-            buttonText = "다시 시도",
+            title = stringResource(R.string.guardian_empty_title),
+            message = stringResource(R.string.guardian_empty_message),
+            buttonText = stringResource(R.string.common_retry),
             onButtonClick = onReload,
         )
     }
@@ -118,7 +120,7 @@ private fun GuardianError(
         StateMessage(
             title = "오류가 발생했습니다.",
             message = message,
-            buttonText = "다시 시도",
+            buttonText = stringResource(R.string.common_retry),
             onButtonClick = onReload,
         )
     }
@@ -133,7 +135,7 @@ private fun GuardianSuccess(
     val chartValues = if (state.chartPoints.isEmpty()) {
         listOf(40f, 35f, 50f, 65f, 80f, 55f, 90f, 30f, 45f, 35f, 60f, 40f)
     } else {
-        state.chartPoints.takeLast(12).map { it.appSwitchCount.toFloat().coerceAtLeast(1f) }
+        state.chartPoints.takeLast(12).map { it.appSwitchCount.toFloat() }
     }
 
     ScreenSurface(modifier) {
@@ -145,22 +147,28 @@ private fun GuardianSuccess(
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             HeaderBlock(
-                title = "Guardian",
-                subtitle = "Your daily device health briefing",
+                title = stringResource(R.string.guardian_title),
+                subtitle = stringResource(R.string.guardian_subtitle),
             )
             ResourceScoreCard(state)
             ActivityCard(chartValues)
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 MetricCard(
-                    title = "Memory",
-                    value = latestPoint?.let { "${it.availableMemPercent.format(0)}% available" }
-                        ?: "No data",
+                    title = stringResource(R.string.guardian_memory),
+                    value = latestPoint?.let {
+                        stringResource(
+                            R.string.guardian_memory_available_format,
+                            it.availableMemPercent.format(0),
+                        )
+                    } ?: stringResource(R.string.common_no_data),
                     iconRes = R.drawable.ic_memory,
                     modifier = Modifier.weight(1f),
                 )
                 MetricCard(
-                    title = "App Switches",
-                    value = latestPoint?.let { "${it.appSwitchCount} recent" } ?: "No data",
+                    title = stringResource(R.string.guardian_app_switches),
+                    value = latestPoint?.let {
+                        stringResource(R.string.guardian_app_switches_recent_format, it.appSwitchCount)
+                    } ?: stringResource(R.string.common_no_data),
                     iconRes = R.drawable.ic_switch,
                     modifier = Modifier.weight(1f),
                 )
@@ -185,12 +193,12 @@ private fun ResourceScoreCard(state: GuardianUiState.Success) {
             ) {
                 Column {
                     Text(
-                        text = "Resource Score",
+                        text = stringResource(R.string.guardian_resource_score),
                         color = SentinAIText,
                         style = SentinAITextStyles.SectionTitle,
                     )
                     Text(
-                        text = "SYSTEM INTEGRITY",
+                        text = stringResource(R.string.guardian_system_integrity),
                         color = SentinAIMuted,
                         style = SentinAITextStyles.Label.copy(fontWeight = FontWeight.Bold),
                     )
@@ -222,7 +230,7 @@ private fun StatusPill(status: GuardianStatus) {
         ) {
             Dot(color = color, modifier = Modifier.size(8.dp))
             Text(
-                text = status.name.lowercase().replaceFirstChar { it.uppercase() },
+                text = stringResource(status.labelRes()),
                 color = color,
                 style = SentinAITextStyles.Label.copy(fontWeight = FontWeight.Bold),
             )
@@ -242,9 +250,13 @@ private fun ActivityCard(values: List<Float>) {
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.Bottom,
             ) {
-                Text(text = "Last Hour Activity", color = SentinAIText, style = SentinAITextStyles.Body)
                 Text(
-                    text = "LIVE TRACKING",
+                    text = stringResource(R.string.guardian_recent_app_switches),
+                    color = SentinAIText,
+                    style = SentinAITextStyles.Body,
+                )
+                Text(
+                    text = stringResource(R.string.guardian_switch_count),
                     color = SentinAIMuted,
                     style = SentinAITextStyles.Label.copy(fontWeight = FontWeight.Bold),
                 )
@@ -253,15 +265,16 @@ private fun ActivityCard(values: List<Float>) {
                 values = values,
                 inactiveColor = SentinAIActivityBarInactive,
                 cornerRadius = 2f,
+                hideZeroValues = true,
                 modifier = Modifier.fillMaxWidth(),
             )
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
-                AxisLabel("60m ago")
-                AxisLabel("30m ago")
-                AxisLabel("NOW")
+                AxisLabel(stringResource(R.string.guardian_axis_older))
+                AxisLabel(stringResource(R.string.guardian_axis_recent))
+                AxisLabel(stringResource(R.string.guardian_axis_now))
             }
         }
     }
@@ -323,18 +336,6 @@ private fun InsightCard(state: GuardianUiState.Success) {
                 color = SentinAIWhite90,
                 style = SentinAITextStyles.BodyRelaxed,
             )
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Text(
-                    text = "SOURCE: ${state.source.uppercase()}",
-                    color = SentinAIWhite60,
-                    style = SentinAITextStyles.Tiny.copy(fontWeight = FontWeight.Normal),
-                )
-
-            }
         }
     }
 }
@@ -349,3 +350,12 @@ private fun AxisLabel(text: String) {
 }
 
 private fun Float.format(digits: Int): String = "%.${digits}f".format(this)
+
+@StringRes
+private fun GuardianStatus.labelRes(): Int {
+    return when (this) {
+        GuardianStatus.NORMAL -> R.string.guardian_status_normal
+        GuardianStatus.CAUTION -> R.string.guardian_status_caution
+        GuardianStatus.DANGER -> R.string.guardian_status_danger
+    }
+}

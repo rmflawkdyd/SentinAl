@@ -38,6 +38,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -106,8 +107,8 @@ fun ChatScreen(
 private fun ChatLoading(modifier: Modifier = Modifier) {
     ScreenSurface(modifier) {
         StateMessage(
-            title = "AI Chat",
-            message = "AI Chat을 준비하는 중입니다.",
+            title = stringResource(R.string.chat_title),
+            message = stringResource(R.string.chat_loading_message),
             isLoading = true,
         )
     }
@@ -128,8 +129,8 @@ private fun ChatEmpty(
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             HeaderBlock(
-                title = "AI chat",
-                subtitle = "Ask about your device activity and health",
+                title = stringResource(R.string.chat_title),
+                subtitle = stringResource(R.string.chat_subtitle),
             )
             Box(modifier = Modifier.weight(1f)) {
                 ChatChrome(
@@ -143,8 +144,8 @@ private fun ChatEmpty(
                 ) {
                     item {
                         StateMessage(
-                            title = "아직 대화가 없습니다.",
-                            message = "내부 데이터 기준으로만 답변할 수 있습니다.",
+                            title = stringResource(R.string.chat_empty_title),
+                            message = stringResource(R.string.chat_empty_message),
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(240.dp),
@@ -164,9 +165,9 @@ private fun ChatError(
 ) {
     ScreenSurface(modifier) {
         StateMessage(
-            title = "답변을 생성하지 못했습니다.",
+            title = stringResource(R.string.chat_error_title),
             message = message,
-            buttonText = "다시 시도",
+            buttonText = stringResource(R.string.common_retry),
             onButtonClick = onRetry,
         )
     }
@@ -195,8 +196,8 @@ private fun ChatSuccess(
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             HeaderBlock(
-                title = "AI chat",
-                subtitle = "Ask about your device activity and health",
+                title = stringResource(R.string.chat_title),
+                subtitle = stringResource(R.string.chat_subtitle),
             )
             Box(modifier = Modifier.weight(1f)) {
                 ChatChrome(
@@ -305,7 +306,7 @@ private fun AiMessage(message: ChatMessage) {
         horizontalAlignment = Alignment.Start,
     ) {
         Text(
-            text = message.source ?: "SentinAI Rule Engine Analysis",
+            text = message.source ?: stringResource(R.string.chat_default_source),
             color = SentinAIInk,
             style = SentinAITextStyles.SmallLabel,
         )
@@ -366,7 +367,7 @@ private fun ChatInput(
             onValueChange = onInputChanged,
             modifier = Modifier.weight(1f),
             placeholder = {
-                Text(text = "What should I optimize?", color = SentinAIMuted)
+                Text(text = stringResource(R.string.chat_input_placeholder), color = SentinAIMuted)
             },
             singleLine = false,
             maxLines = 4,
@@ -400,7 +401,7 @@ private fun ChatInput(
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_send),
-                contentDescription = "Send message",
+                contentDescription = stringResource(R.string.chat_send_content_description),
                 tint = SentinAIWhite,
                 modifier = Modifier.size(18.dp),
             )

@@ -39,7 +39,7 @@ class TemplateInsightGenerator @Inject constructor(): InsightGenerator {
         return InsightSummary(
             title = title,
             body = body,
-            source = "Template",
+            source = AiResponseLabels.TEMPLATE,
             modelTier = ModelTier.Template,
         )
     }

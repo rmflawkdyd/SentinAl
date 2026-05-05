@@ -1,4 +1,79 @@
 <resources>
     <string name="app_name">SentinAI</string>
-    <string name="title_activity_app_entry_screen">AppEntryScreen</string>
+    <string name="title_activity_app_entry_screen">SentinAI</string>
+
+    <string name="nav_dashboard">기기 상태</string>
+    <string name="nav_analytics">통계</string>
+    <string name="nav_chat">AI 채팅</string>
+
+    <string name="common_no_data">데이터 없음</string>
+    <string name="common_retry">다시 시도</string>
+
+    <string name="guardian_title">기기 상태</string>
+    <string name="guardian_subtitle">오늘의 기기 상태 브리핑</string>
+    <string name="guardian_loading_message">최근 데이터를 불러오는 중입니다.</string>
+    <string name="guardian_empty_title">표시할 기기 상태 데이터가 없습니다.</string>
+    <string name="guardian_empty_message">사용정보 접근 권한 또는 최근 집계 데이터가 필요합니다.</string>
+    <string name="guardian_resource_score">리소스 점수</string>
+    <string name="guardian_system_integrity">시스템 안정성</string>
+    <string name="guardian_memory">메모리</string>
+    <string name="guardian_memory_available_format">%1$s%% 여유</string>
+    <string name="guardian_app_switches">앱 전환</string>
+    <string name="guardian_app_switches_recent_format">최근 %1$d회</string>
+    <string name="guardian_recent_app_switches">최근 앱 전환</string>
+    <string name="guardian_switch_count">전환 횟수</string>
+    <string name="guardian_axis_older">이전</string>
+    <string name="guardian_axis_recent">최근</string>
+    <string name="guardian_axis_now">현재</string>
+    <string name="guardian_status_normal">정상</string>
+    <string name="guardian_status_caution">주의</string>
+    <string name="guardian_status_danger">위험</string>
+
+    <string name="analytics_title">분석</string>
+    <string name="analytics_subtitle">주간 사용 리포트</string>
+    <string name="analytics_loading_message">주간 분석 데이터를 불러오는 중입니다.</string>
+    <string name="analytics_empty_title">아직 분석할 사용 데이터가 없습니다.</string>
+    <string name="analytics_empty_message">일별 집계가 만들어지면 주간 리포트가 표시됩니다.</string>
+    <string name="analytics_error_title">분석 데이터를 불러오지 못했습니다.</string>
+    <string name="analytics_total_usage">총 사용 시간</string>
+    <string name="analytics_change">변화율</string>
+    <string name="analytics_no_previous_data">이전 주 데이터 없음</string>
+    <string name="analytics_vs_last_week">지난주 대비</string>
+    <string name="analytics_night_usage">심야 사용</string>
+    <string name="analytics_night_range">오후 10시 - 오전 6시</string>
+    <string name="analytics_top_apps">상위 5개 앱</string>
+    <string name="analytics_app_usage_empty">앱별 사용량 데이터가 없습니다.</string>
+    <string name="analytics_launch_count_format">실행 %1$d회</string>
+    <string name="analytics_category_usage">카테고리 사용량</string>
+    <string name="analytics_category_empty">카테고리 데이터가 없습니다.</string>
+    <string name="analytics_usage_hours_minutes_format">%1$d시간 %2$d분</string>
+    <string name="analytics_usage_minutes_format">%1$d분</string>
+    <string name="weekday_monday">월</string>
+    <string name="weekday_tuesday">화</string>
+    <string name="weekday_wednesday">수</string>
+    <string name="weekday_thursday">목</string>
+    <string name="weekday_friday">금</string>
+    <string name="weekday_saturday">토</string>
+    <string name="weekday_sunday">일</string>
+
+    <string name="chat_title">AI 채팅</string>
+    <string name="chat_subtitle">기기 활동과 상태를 질문해보세요</string>
+    <string name="chat_loading_message">AI 채팅을 준비하는 중입니다.</string>
+    <string name="chat_empty_title">아직 대화가 없습니다.</string>
+    <string name="chat_empty_message">내부 데이터 기준으로만 답변할 수 있습니다.</string>
+    <string name="chat_error_title">답변을 생성하지 못했습니다.</string>
+    <string name="chat_default_source">SentinAI 룰 엔진 분석</string>
+    <string name="chat_input_placeholder">무엇이 궁금하세요?</string>
+    <string name="chat_send_content_description">메시지 보내기</string>
+
+    <string name="onboarding_loading_message">권한 상태를 확인하는 중입니다.</string>
+    <string name="onboarding_error_title">권한 상태를 확인할 수 없습니다.</string>
+    <string name="onboarding_intro_title">사용 기록으로 내 기기 상태를 쉽게 확인하세요</string>
+    <string name="onboarding_intro_body">사용정보 접근 권한은 SentinAI가 이 기기 안에서만 활동과 기기 신호를 요약하는 데 사용됩니다.</string>
+    <string name="onboarding_bullet_guardian">로컬 사용 지표로 기기 상태 점수를 계산합니다.</string>
+    <string name="onboarding_bullet_local">수집된 신호는 휴대폰 안에만 보관합니다.</string>
+    <string name="onboarding_bullet_ai">온디바이스 AI 대체 경로로 요약을 생성합니다.</string>
+    <string name="onboarding_bullet_no_external">외부 진단이나 검색은 사용하지 않습니다.</string>
+    <string name="onboarding_accept">허용하기</string>
+    <string name="onboarding_decline">거부하기</string>
 </resources>

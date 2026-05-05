@@ -276,7 +276,7 @@ fun BottomInputFade(modifier: Modifier = Modifier, content: @Composable () -> Un
                     1f to SentinAIBg,
                 ),
             )
-            //.padding(start = 0.dp, end = 0.dp, top = 16.dp, bottom = 8.dp)
+
     ) {
         content()
     }

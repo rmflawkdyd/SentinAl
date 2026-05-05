@@ -54,7 +54,7 @@ class FallbackInsightGenerator @Inject constructor(
     private suspend fun tryGemmaOrTemplate(
         result: GuardianResult,
     ): InsightSummary {
-        val gemmaInsight = withTimeoutOrNull(2_000L) {
+        val gemmaInsight = withTimeoutOrNull(5_000L) {
             gemmaProvider.generateGuardianInsight(result)
         }
 

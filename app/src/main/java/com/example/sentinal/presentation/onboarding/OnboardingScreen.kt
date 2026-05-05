@@ -1,6 +1,7 @@
 package com.example.sentinal.presentation.onboarding
 
 import androidx.activity.compose.LocalActivity
+import androidx.annotation.StringRes
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -27,6 +28,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -93,8 +95,8 @@ fun OnboardingScreen(
 private fun OnboardingLoading(modifier: Modifier = Modifier) {
     ScreenSurface(modifier) {
         StateMessage(
-            title = "SentinAI",
-            message = "권한 상태를 확인하는 중입니다.",
+            title = stringResource(R.string.app_name),
+            message = stringResource(R.string.onboarding_loading_message),
             isLoading = true,
         )
     }
@@ -108,9 +110,9 @@ private fun OnboardingError(
 ) {
     ScreenSurface(modifier) {
         StateMessage(
-            title = "권한 상태를 확인할 수 없습니다.",
+            title = stringResource(R.string.onboarding_error_title),
             message = message,
-            buttonText = "다시 시도",
+            buttonText = stringResource(R.string.common_retry),
             onButtonClick = onRetry,
         )
     }
@@ -165,7 +167,7 @@ private fun OnboardingHeader() {
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
-                text = "SentinAI",
+                text = stringResource(R.string.app_name),
                 color = SentinAINavy,
                 style = SentinAITextStyles.AppTitle,
             )
@@ -182,13 +184,13 @@ private fun IntroSection() {
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Text(
-            text = "Turn usage access into private insights",
+            text = stringResource(R.string.onboarding_intro_title),
             color = SentinAIInk,
             style = SentinAITextStyles.HeroTitle,
             textAlign = TextAlign.Center,
         )
         Text(
-            text = "Usage Access lets SentinAI summarize activity and device signals on this device only.",
+            text = stringResource(R.string.onboarding_intro_body),
             modifier = Modifier.padding(top = 10.dp),
             color = SentinAISecondaryText,
             style = SentinAITextStyles.BodyMedium,
@@ -211,19 +213,19 @@ private fun PermissionBulletCard() {
         ) {
             PermissionBullet(
                 icon = R.drawable.ic_chart,
-                text = "Build Guardian scores from local usage metrics",
+                textRes = R.string.onboarding_bullet_guardian,
             )
             PermissionBullet(
                 icon = R.drawable.ic_doc,
-                text = "Keep collected signals on your phone",
+                textRes = R.string.onboarding_bullet_local,
             )
             PermissionBullet(
                 icon = R.drawable.ic_summary,
-                text = "Generate summaries with on-device AI fallback",
+                textRes = R.string.onboarding_bullet_ai,
             )
             PermissionBullet(
                 icon = R.drawable.ic_star,
-                text = "Never use external diagnosis or search",
+                textRes = R.string.onboarding_bullet_no_external,
             )
         }
     }
@@ -232,7 +234,7 @@ private fun PermissionBulletCard() {
 @Composable
 private fun PermissionBullet(
     icon: Int,
-    text: String,
+    @StringRes textRes: Int,
 ) {
     Row(
         horizontalArrangement = Arrangement.spacedBy(12.dp),
@@ -245,7 +247,7 @@ private fun PermissionBullet(
             modifier = Modifier.size(18.dp),
         )
         Text(
-            text = text,
+            text = stringResource(textRes),
             color = SentinAIText,
             style = SentinAITextStyles.BodyMedium,
             modifier = Modifier.weight(1f),
@@ -284,7 +286,7 @@ private fun OnboardingFooter(
                     modifier = Modifier.size(18.dp),
                 )
                 Text(
-                    text = "Accept",
+                    text = stringResource(R.string.onboarding_accept),
                     color = SentinAIWhite,
                     style = SentinAITextStyles.Body.copy(fontWeight = FontWeight.SemiBold),
                 )
@@ -300,11 +302,10 @@ private fun OnboardingFooter(
             border = BorderStroke(1.dp, SentinAILine),
         ) {
             Text(
-                text = "Decline",
+                text = stringResource(R.string.onboarding_decline),
                 style = SentinAITextStyles.Body.copy(fontWeight = FontWeight.SemiBold),
             )
         }
 
     }
 }
-

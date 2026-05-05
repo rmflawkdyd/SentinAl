@@ -23,6 +23,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -80,6 +81,7 @@ private fun SentinBottomBar(
     ) {
         MainDestination.entries.forEach { destination ->
             val selected = destination == selectedDestination
+            val label = stringResource(id = destination.labelRes)
             Column(
                 modifier = Modifier
                     .size(width = 72.dp, height = 64.dp)
@@ -89,12 +91,12 @@ private fun SentinBottomBar(
             ) {
                 Icon(
                     painter = painterResource(id = destination.iconRes),
-                    contentDescription = destination.label,
+                    contentDescription = label,
                     tint = if (selected) SentinAINavy else SentinAISubtle,
                     modifier = Modifier.size(20.dp),
                 )
                 Text(
-                    text = destination.label,
+                    text = label,
                     modifier = Modifier.padding(top = 4.dp),
                     color = if (selected) SentinAINavy else SentinAISubtle,
                     style = SentinAITextStyles.SmallLabel.copy(fontWeight = FontWeight.Medium),

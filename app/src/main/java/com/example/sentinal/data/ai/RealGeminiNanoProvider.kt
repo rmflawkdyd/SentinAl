@@ -105,7 +105,7 @@ class RealGeminiNanoProvider @Inject constructor(
         return InsightSummary(
             title = "Gemini Nano 인사이트",
             body = output,
-            source = "Guardian 최근 5분 집계 데이터",
+            source = AiResponseLabels.GUARDIAN_RECENT_FIVE_MINUTE_DATA,
             modelTier = ModelTier.GeminiNano,
         )
     }
@@ -143,7 +143,7 @@ class RealGeminiNanoProvider @Inject constructor(
         result: GuardianResult,
     ): String {
         return buildString {
-            appendLine("너는 SentinAI의 Guardian 인사이트 생성기다.")
+            appendLine("너는 SentinAI의 기기 보호 인사이트 생성기다.")
             appendLine("제공된 내부 데이터만 사용해 2~3문장 인사이트를 작성하라.")
             appendLine("상태: ${result.status}")
             appendLine("점수: ${result.score}")

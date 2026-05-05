@@ -1,6 +1,8 @@
 package com.example.sentinal.data.ai
 
 import android.content.Context
+import android.os.SystemClock
+import android.util.Log
 import com.google.mediapipe.tasks.genai.llminference.LlmInference
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
@@ -25,11 +27,19 @@ class RealLiteRtGemmaInferenceEngine @Inject constructor(
     }
 
     override suspend fun infer(prompt: String): String = withContext(Dispatchers.IO) {
+        val startedAt = SystemClock.elapsedRealtime()
+        Log.d(TAG, "Gemma infer requested, promptLength=${prompt.length}")
+
         val activeSession = getOrCreateSession()
-        return@withContext activeSession.generate(prompt).trim()
+        val result = activeSession.generate(prompt).trim()
+        val elapsed = SystemClock.elapsedRealtime() - startedAt
+
+        Log.d(TAG, "Gemma infer finished, elapsed=${elapsed}ms, outputLength=${result.length}")
+        return@withContext result
     }
 
     override fun release() {
+        Log.d(TAG, "Gemma session release requested, hasSession=${session != null}")
         session?.close()
         session = null
     }
@@ -45,14 +55,28 @@ class RealLiteRtGemmaInferenceEngine @Inject constructor(
     }
 
     private suspend fun getOrCreateSession(): GemmaLiteRtSession {
-        session?.let { return it }
+        session?.let {
+            Log.d(TAG, "Gemma session reused")
+            return it
+        }
 
         return sessionMutex.withLock {
-            session?.let { return it }
+            session?.let {
+                Log.d(TAG, "Gemma session reused after lock")
+                return@withLock it
+            }
 
+            val startedAt = SystemClock.elapsedRealtime()
+            Log.d(TAG, "Gemma session create started")
             val modelFile = ensureModelFile()
             val created = createSession(modelFile)
             session = created
+            val elapsed = SystemClock.elapsedRealtime() - startedAt
+
+            Log.d(
+                TAG,
+                "Gemma session create finished, elapsed=${elapsed}ms, modelSize=${modelFile.length()}",
+            )
             created
         }
     }
@@ -93,5 +117,9 @@ class RealLiteRtGemmaInferenceEngine @Inject constructor(
                 llmInference.close()
             }
         }
+    }
+
+    private companion object {
+        const val TAG = "SentinAI-GemmaEngine"
     }
 }
