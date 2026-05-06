@@ -171,6 +171,7 @@ private fun WeeklyUsageCard(summary: AnalyticsSummary) {
         .filter { chartValues[it] > 0f }
         .maxByOrNull { chartValues[it] }
     val weekdayLabels = summary.dailyUsages.map { stringResource(it.dateEpoch.toWeekdayLabelRes()) }
+    val usageLabels = summary.dailyUsages.map { it.usageMillis.toCompactHoursText() }
 
     SentinCard(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp)) {
         Column(
@@ -199,7 +200,7 @@ private fun WeeklyUsageCard(summary: AnalyticsSummary) {
             )
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
+                horizontalArrangement = Arrangement.spacedBy(4.dp),
             ) {
                 val labels = if (weekdayLabels.size == chartValues.size) {
                     weekdayLabels
@@ -214,15 +215,33 @@ private fun WeeklyUsageCard(summary: AnalyticsSummary) {
                         stringResource(R.string.weekday_sunday),
                     )
                 }
+                val usages = if (usageLabels.size == chartValues.size) {
+                    usageLabels
+                } else {
+                    List(chartValues.size) { 0L.toCompactHoursText() }
+                }
                 labels.forEachIndexed { index, day ->
-                    Text(
-                        text = day,
-                        color = if (index == highlightIndex) SentinAIInk else SentinAISubtle,
-                        style = SentinAITextStyles.Tiny.copy(
-                            fontWeight = if (index == highlightIndex) FontWeight.Bold else FontWeight.Normal,
-                        ),
-                        textAlign = TextAlign.Center,
-                    )
+                    Column(
+                        modifier = Modifier.weight(1f),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                    ) {
+                        Text(
+                            text = day,
+                            color = if (index == highlightIndex) SentinAIInk else SentinAISubtle,
+                            style = SentinAITextStyles.Tiny.copy(
+                                fontWeight = if (index == highlightIndex) FontWeight.Bold else FontWeight.Normal,
+                            ),
+                            textAlign = TextAlign.Center,
+                        )
+                        Text(
+                            text = usages[index],
+                            color = if (index == highlightIndex) SentinAIInk else SentinAICaptionText,
+                            style = SentinAITextStyles.Tiny.copy(
+                                fontWeight = if (index == highlightIndex) FontWeight.Bold else FontWeight.Normal,
+                            ),
+                            textAlign = TextAlign.Center,
+                        )
+                    }
                 }
             }
         }
