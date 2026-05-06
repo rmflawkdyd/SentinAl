@@ -20,11 +20,6 @@
     <string name="guardian_memory_available_format">%1$s%% 여유</string>
     <string name="guardian_app_switches">앱 전환</string>
     <string name="guardian_app_switches_recent_format">최근 %1$d회</string>
-    <string name="guardian_recent_app_switches">최근 앱 전환</string>
-    <string name="guardian_switch_count">전환 횟수</string>
-    <string name="guardian_axis_older">이전</string>
-    <string name="guardian_axis_recent">최근</string>
-    <string name="guardian_axis_now">현재</string>
     <string name="guardian_status_normal">정상</string>
     <string name="guardian_status_caution">주의</string>
     <string name="guardian_status_danger">위험</string>

@@ -31,7 +31,6 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.sentinal.R
 import com.example.sentinal.domain.model.GuardianStatus
-import com.example.sentinal.presentation.design.BarChart
 import com.example.sentinal.presentation.design.Dot
 import com.example.sentinal.presentation.design.HeaderBlock
 import com.example.sentinal.presentation.design.MetricGlyph
@@ -39,7 +38,6 @@ import com.example.sentinal.presentation.design.ScoreRing
 import com.example.sentinal.presentation.design.ScreenSurface
 import com.example.sentinal.presentation.design.SentinCard
 import com.example.sentinal.presentation.design.StateMessage
-import com.example.sentinal.ui.theme.SentinAIActivityBarInactive
 import com.example.sentinal.ui.theme.SentinAIDanger
 import com.example.sentinal.ui.theme.SentinAIInfo
 import com.example.sentinal.ui.theme.SentinAIInk
@@ -132,11 +130,6 @@ private fun GuardianSuccess(
     state: GuardianUiState.Success,
 ) {
     val latestPoint = state.chartPoints.lastOrNull()
-    val chartValues = if (state.chartPoints.isEmpty()) {
-        listOf(40f, 35f, 50f, 65f, 80f, 55f, 90f, 30f, 45f, 35f, 60f, 40f)
-    } else {
-        state.chartPoints.takeLast(12).map { it.appSwitchCount.toFloat() }
-    }
 
     ScreenSurface(modifier) {
         Column(
@@ -151,7 +144,6 @@ private fun GuardianSuccess(
                 subtitle = stringResource(R.string.guardian_subtitle),
             )
             ResourceScoreCard(state)
-            ActivityCard(chartValues)
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 MetricCard(
                     title = stringResource(R.string.guardian_memory),
@@ -239,48 +231,6 @@ private fun StatusPill(status: GuardianStatus) {
 }
 
 @Composable
-private fun ActivityCard(values: List<Float>) {
-    SentinCard(modifier = Modifier.fillMaxWidth()) {
-        Column(
-            modifier = Modifier.padding(21.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.Bottom,
-            ) {
-                Text(
-                    text = stringResource(R.string.guardian_recent_app_switches),
-                    color = SentinAIText,
-                    style = SentinAITextStyles.Body,
-                )
-                Text(
-                    text = stringResource(R.string.guardian_switch_count),
-                    color = SentinAIMuted,
-                    style = SentinAITextStyles.Label.copy(fontWeight = FontWeight.Bold),
-                )
-            }
-            BarChart(
-                values = values,
-                inactiveColor = SentinAIActivityBarInactive,
-                cornerRadius = 2f,
-                hideZeroValues = true,
-                modifier = Modifier.fillMaxWidth(),
-            )
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-            ) {
-                AxisLabel(stringResource(R.string.guardian_axis_older))
-                AxisLabel(stringResource(R.string.guardian_axis_recent))
-                AxisLabel(stringResource(R.string.guardian_axis_now))
-            }
-        }
-    }
-}
-
-@Composable
 private fun MetricCard(
     title: String,
     value: String,
@@ -338,15 +288,6 @@ private fun InsightCard(state: GuardianUiState.Success) {
             )
         }
     }
-}
-
-@Composable
-private fun AxisLabel(text: String) {
-    Text(
-        text = text,
-        color = SentinAIMuted,
-        style = SentinAITextStyles.Label.copy(fontWeight = FontWeight.Bold),
-    )
 }
 
 private fun Float.format(digits: Int): String = "%.${digits}f".format(this)
